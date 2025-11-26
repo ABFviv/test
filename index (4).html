@@ -1413,7 +1413,8 @@
                         </div>
                         <div class="mb-3">
                             <label for="projectDepartment" class="form-label">هەڵبژاردنی بەش</label>
-                            <select class="form-select" id="projectDepartment" multiple required>
+                            <select class="form-select" id="projectDepartment" required>
+                                <option value="">بەش هەڵبژێرە</option>
                                 <option value="crushing-prep">هاڕین و ئامادەکردن</option>
                                 <option value="cutting-setting">بڕین و بارکردن</option>
                                 <option value="klin">فڕن</option>
@@ -3477,7 +3478,8 @@
                 name,
                 rate,
                 note,
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                needsConfirmation: !(employee.department === 'electrical-ac' || employee.department === 'mechanical')
             };
             
             employee.otherWork.push(workRecord);
@@ -4032,19 +4034,19 @@
 
         // Update project employees checkboxes
         function updateProjectEmployeesCheckboxes() {
-            const departmentSelect = document.getElementById('projectDepartment');
-            const selectedDepartments = Array.from(departmentSelect.selectedOptions).map(option => option.value);
+            const department = document.getElementById('projectDepartment').value;
+            const employeesContainer = document.getElementById('projectEmployeesContainer');
             
             // Clear existing checkboxes
             employeesContainer.innerHTML = '';
             
-            if (selectedDepartments.length === 0) {
+            if (!department) {
                 employeesContainer.innerHTML = '<p class="text-muted">تکایە یەکەم بەشێک هەڵبژێرە</p>';
                 return;
             }
             
             // Filter employees by selected department
-             const departmentEmployees = employees.filter(emp => selectedDepartments.includes(emp.department));
+            const departmentEmployees = employees.filter(emp => emp.department === department);
             
             if (departmentEmployees.length === 0) {
                 employeesContainer.innerHTML = '<p class="text-muted">هیچ کارمەندێک لەم بەشەدا نییە</p>';
@@ -4058,7 +4060,7 @@
                 
                 checkboxDiv.innerHTML = `
                     <input type="checkbox" class="employee-checkbox" id="project-emp-${employee.id}" value="${employee.id}">
-                    <label for="project-emp-${employee.id}">${employee.name} (${employee.id}) - ${getDepartmentDisplayName(employee.department)}</label>
+                    <label for="project-emp-${employee.id}">${employee.name} (${employee.id})</label>
                 `;
                 
                 employeesContainer.appendChild(checkboxDiv);
