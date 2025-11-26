@@ -817,6 +817,24 @@
         #totalsDepartmentFilter {
             margin-bottom: 20px;
         }
+
+        .department-checkboxes-container {
+    border: 1px solid #ced4da;
+    border-radius: 0.375rem;
+    padding: 15px;
+    background-color: white;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.department-checkboxes-container .form-check {
+    margin-bottom: 8px;
+}
+
+.department-checkboxes-container .form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
     </style>
 </head>
 <body>
@@ -986,40 +1004,76 @@
     </div>
     
     <!-- Department Filter for Daily Work Totals -->
-        <div class="period-filter" id="totalsDepartmentFilter" style="display: none;">
-            <div class="row g-3 align-items-center">
-                <div class="col-md-4">
-                    <label for="totalsDepartment" class="form-label text-center w-100">هەڵبژاردنی بەش</label>
-                    <select class="form-select text-center" id="totalsDepartment" multiple style="height: 120px;">
-                        <option value="crushing-prep">هاڕین و ئامادەکردن</option>
-                        <option value="cutting-setting">بڕین و بارکردن</option>
-                        <option value="klin">فڕن</option>
-                        <option value="unsetting">داگرتن</option>
-                        <option value="mechanical">میکانیک</option>
-                        <option value="electrical-ac">کارەبا</option>
-                    </select>
-                    <small class="form-text text-center">کلیکی بکە و CTRL بگرە بۆ هەڵبژاردنی زیاتر لە یەک بەش</small>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label text-center w-100">&nbsp;</label>
-                    <button class="btn btn-primary w-100" id="applyTotalsFilterBtn">
-                        <i class="bi bi-funnel"></i> جێبەجێکردن
-                    </button>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label text-center w-100">&nbsp;</label>
-                    <button class="btn btn-secondary w-100" id="selectAllDepartmentsBtn">
-                        <i class="bi bi-check-all"></i> هەموویان
-                    </button>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label text-center w-100">&nbsp;</label>
-                    <button class="btn btn-secondary w-100" id="clearDepartmentsBtn">
-                        <i class="bi bi-x-circle"></i> پاککردنەوە
-                    </button>
+        <!-- Department Filter for Daily Work Totals -->
+<div class="period-filter" id="totalsDepartmentFilter" style="display: none;">
+    <div class="row g-3 align-items-center">
+        <div class="col-md-8">
+            <label class="form-label text-center w-100">هەڵبژاردنی بەش</label>
+            <div class="department-checkboxes-container" style="border: 1px solid #ced4da; border-radius: 0.375rem; padding: 15px; background-color: white; max-height: 150px; overflow-y: auto;">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-check">
+                            <input class="form-check-input department-checkbox" type="checkbox" value="crushing-prep" id="dept-crushing">
+                            <label class="form-check-label" for="dept-crushing">
+                                هاڕین و ئامادەکردن
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input department-checkbox" type="checkbox" value="cutting-setting" id="dept-cutting">
+                            <label class="form-check-label" for="dept-cutting">
+                                بڕین و بارکردن
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input department-checkbox" type="checkbox" value="klin" id="dept-klin">
+                            <label class="form-check-label" for="dept-klin">
+                                فڕن
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-check">
+                            <input class="form-check-input department-checkbox" type="checkbox" value="unsetting" id="dept-unsetting">
+                            <label class="form-check-label" for="dept-unsetting">
+                                داگرتن
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input department-checkbox" type="checkbox" value="mechanical" id="dept-mechanical">
+                            <label class="form-check-label" for="dept-mechanical">
+                                میکانیک
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input department-checkbox" type="checkbox" value="electrical-ac" id="dept-electrical">
+                            <label class="form-check-label" for="dept-electrical">
+                                کارەبا
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+        <div class="col-md-2">
+            <label class="form-label text-center w-100">&nbsp;</label>
+            <button class="btn btn-primary w-100" id="applyTotalsFilterBtn">
+                <i class="bi bi-funnel"></i> جێبەجێکردن
+            </button>
+        </div>
+        <div class="col-md-1">
+            <label class="form-label text-center w-100">&nbsp;</label>
+            <button class="btn btn-secondary w-100" id="selectAllDepartmentsBtn">
+                <i class="bi bi-check-all"></i> هەموویان
+            </button>
+        </div>
+        <div class="col-md-1">
+            <label class="form-label text-center w-100">&nbsp;</label>
+            <button class="btn btn-secondary w-100" id="clearDepartmentsBtn">
+                <i class="bi bi-x-circle"></i> پاککردنەوە
+            </button>
+        </div>
+    </div>
+</div>
     
     <!-- Daily Work Totals Section -->
     <div class="daily-work-totals" id="dailyWorkTotalsSection" style="display: none;">
@@ -2148,30 +2202,29 @@
             document.getElementById('finalRejectNotificationBtn').addEventListener('click', finalRejectNotification);
         }
 
-        // Select all departments
-        function selectAllDepartments() {
-            const departmentSelect = document.getElementById('totalsDepartment');
-            Array.from(departmentSelect.options).forEach(option => {
-                option.selected = true;
-            });
-            showNotification('هەموو بەشەکان هەڵبژێردران', 'info');
-        }
+       // Select all departments
+function selectAllDepartments() {
+    const checkboxes = document.querySelectorAll('.department-checkbox');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = true;
+    });
+    showNotification('هەموو بەشەکان هەڵبژێردران', 'info');
+}
 
-        // Clear all departments
-        function clearDepartments() {
-            const departmentSelect = document.getElementById('totalsDepartment');
-            Array.from(departmentSelect.options).forEach(option => {
-                option.selected = false;
-            });
-            showNotification('هەموو بەشەکان پاککرانەوە', 'info');
-        }
+// Clear all departments
+function clearDepartments() {
+    const checkboxes = document.querySelectorAll('.department-checkbox');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    showNotification('هەموو بەشەکان پاککرانەوە', 'info');
+}
 
-        // Apply department filter to daily work totals
-        function applyTotalsDepartmentFilter() {
-            updateDailyWorkTotals();
-            showNotification('فیلتەری بەش جێبەجێ کرا', 'success');
-        }
-
+// Apply department filter to daily work totals
+function applyTotalsDepartmentFilter() {
+    updateDailyWorkTotals();
+    showNotification('فیلتەری بەش جێبەجێ کرا', 'success');
+}
         // Toggle custom period fields
         function toggleCustomPeriod() {
             const periodType = document.getElementById('periodType').value;
@@ -3860,9 +3913,9 @@
             if (showTotals) {
                 dailyWorkTotalsSection.style.display = 'block';
                 
-                // Get selected departments
-                const departmentSelect = document.getElementById('totalsDepartment');
-                const selectedDepartments = Array.from(departmentSelect.selectedOptions).map(option => option.value);
+               // Get selected departments from checkboxes
+const checkboxes = document.querySelectorAll('.department-checkbox:checked');
+const selectedDepartments = Array.from(checkboxes).map(checkbox => checkbox.value);
                 
                 // Show appropriate columns based on department
                 if (currentUser.role === 'admin') {
