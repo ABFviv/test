@@ -952,6 +952,10 @@
                     <button class="btn btn-success ms-2 admin-only" id="addEmployeeBtn">
                         <i class="bi bi-person-plus"></i> زیادکردنی کارمەند
                     </button>
+                           <!-- ADD THE DAILY TOTALS BUTTON HERE -->
+        <button class="btn btn-info ms-2" id="showDailyTotalsBtn">
+            <i class="bi bi-bar-chart"></i> پیشاندانی کاری ڕۆژانەی گشتی
+        </button>
                     <button class="btn btn-warning ms-2" id="testFirebaseBtn">
                         <i class="bi bi-database-check"></i> Test Firebase
                     </button>
@@ -970,10 +974,7 @@
                     <button class="btn btn-success ms-2 quick-record-only" id="quickRecordBtn" style="display: none;">
                         <i class="bi bi-plus-circle"></i> زیادکردنی تۆمار
                     </button>
-                            <!-- ADD THE DAILY TOTALS BUTTON HERE -->
-        <button class="btn btn-info ms-2" id="showDailyTotalsBtn">
-            <i class="bi bi-bar-chart"></i> پیشاندانی کاری ڕۆژانەی گشتی
-        </button>
+                     
                 </div>
             </div>
         </div>
@@ -2109,8 +2110,12 @@
             document.getElementById('dailyWorkTab').addEventListener('click', function() {
                 switchRecordType('daily');
 
-            // Show daily totals button
- document.getElementById('showDailyTotalsBtn').addEventListener('click', showDailyWorkTotals);
+            // Use event delegation for the daily totals button
+document.addEventListener('click', function(event) {
+    if (event.target && event.target.id === 'showDailyTotalsBtn') {
+        showDailyWorkTotals();
+    }
+});
                 
             });
             
@@ -2368,6 +2373,13 @@ function applyTotalsDepartmentFilter() {
             // Show/hide department filter for daily work totals
             const totalsDepartmentFilter = document.getElementById('totalsDepartmentFilter');
             totalsDepartmentFilter.style.display = (currentUser.role === 'admin') ? 'block' : 'none';
+
+             // Add direct event listener for daily totals button
+    const dailyTotalsBtn = document.getElementById('showDailyTotalsBtn');
+    if (dailyTotalsBtn) {
+        dailyTotalsBtn.onclick = showDailyWorkTotals;
+        console.log('Daily totals button event listener added'); // Debug
+    }
             
             // Load and display employees
             renderEmployeeTable();
@@ -2377,7 +2389,7 @@ function applyTotalsDepartmentFilter() {
             
             // Update notification count
             updateNotificationCount();
-            
+        
            // Hide daily work totals section by default
 document.getElementById('dailyWorkTotalsSection').style.display = 'none';
         }
@@ -5453,12 +5465,16 @@ const selectedDepartments = Array.from(checkboxes).map(checkbox => checkbox.valu
 // Show daily work totals section
 // Show daily work totals section
 function showDailyWorkTotals() {
-    console.log('Button clicked!'); // Debug line
+    console.log('showDailyWorkTotals function called!'); // Debug
     
     const dailyWorkTotalsSection = document.getElementById('dailyWorkTotalsSection');
     const showDailyTotalsBtn = document.getElementById('showDailyTotalsBtn');
     
-    if (dailyWorkTotalsSection.style.display === 'none' || dailyWorkTotalsSection.style.display === '') {
+    // Check current state
+    const isHidden = dailyWorkTotalsSection.style.display === 'none' || 
+                     dailyWorkTotalsSection.style.display === '';
+    
+    if (isHidden) {
         // Show the section
         dailyWorkTotalsSection.style.display = 'block';
         showDailyTotalsBtn.innerHTML = '<i class="bi bi-eye-slash"></i> لاپەڕەی کاری ڕۆژانەی گشتی';
@@ -5467,34 +5483,16 @@ function showDailyWorkTotals() {
         
         // Update the totals with current filters
         updateDailyWorkTotals();
+        console.log('Section shown'); // Debug
     } else {
         // Hide the section
         dailyWorkTotalsSection.style.display = 'none';
         showDailyTotalsBtn.innerHTML = '<i class="bi bi-bar-chart"></i> پیشاندانی کاری ڕۆژانەی گشتی';
         showDailyTotalsBtn.classList.remove('btn-warning');
         showDailyTotalsBtn.classList.add('btn-info');
+        console.log('Section hidden'); // Debug
     }
 }
-
-        // Show notification
-        function showNotification(message, type) {
-            const toast = document.getElementById('notificationToast');
-            const toastMessage = document.getElementById('toastMessage');
-            
-            toastMessage.textContent = message;
-            
-            toast.className = 'toast';
-            if (type === 'success') {
-                toast.classList.add('bg-success', 'text-white');
-            } else if (type === 'danger') {
-                toast.classList.add('bg-danger', 'text-white');
-            } else if (type === 'info') {
-                toast.classList.add('bg-info', 'text-white');
-            }
-            
-            const bsToast = new bootstrap.Toast(toast);
-            bsToast.show();
-        }
     </script>
 </body>
 </html>
