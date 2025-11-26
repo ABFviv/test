@@ -970,6 +970,9 @@
                     <button class="btn btn-success ms-2 quick-record-only" id="quickRecordBtn" style="display: none;">
                         <i class="bi bi-plus-circle"></i> زیادکردنی تۆمار
                     </button>
+                            <button class="btn btn-info ms-2" id="showDailyTotalsBtn">
+            <i class="bi bi-bar-chart"></i> پیشاندانی کاری ڕۆژانەی گشتی
+        </button>
                 </div>
             </div>
         </div>
@@ -2104,6 +2107,10 @@
             // Record tabs
             document.getElementById('dailyWorkTab').addEventListener('click', function() {
                 switchRecordType('daily');
+
+            // Show daily totals button
+document.getElementById('showDailyTotalsBtn').addEventListener('click', showDailyWorkTotals);
+                
             });
             
             document.getElementById('otherWorkTab').addEventListener('click', function() {
@@ -2370,8 +2377,8 @@ function applyTotalsDepartmentFilter() {
             // Update notification count
             updateNotificationCount();
             
-            // Update daily work totals
-            updateDailyWorkTotals();
+           // Hide daily work totals section by default
+document.getElementById('dailyWorkTotalsSection').style.display = 'none';
         }
 
         // Show projects page
@@ -5440,6 +5447,29 @@ const selectedDepartments = Array.from(checkboxes).map(checkbox => checkbox.valu
                 showNotification('Firebase connection failed: ' + error.message, 'danger');
             }
         }
+
+        // Show daily work totals section
+function showDailyWorkTotals() {
+    const dailyWorkTotalsSection = document.getElementById('dailyWorkTotalsSection');
+    const showDailyTotalsBtn = document.getElementById('showDailyTotalsBtn');
+    
+    if (dailyWorkTotalsSection.style.display === 'none') {
+        // Show the section
+        dailyWorkTotalsSection.style.display = 'block';
+        showDailyTotalsBtn.innerHTML = '<i class="bi bi-bar-chart"></i> لاپەڕەی کاری ڕۆژانەی گشتی';
+        showDailyTotalsBtn.classList.remove('btn-info');
+        showDailyTotalsBtn.classList.add('btn-warning');
+        
+        // Update the totals with current filters
+        updateDailyWorkTotals();
+    } else {
+        // Hide the section
+        dailyWorkTotalsSection.style.display = 'none';
+        showDailyTotalsBtn.innerHTML = '<i class="bi bi-bar-chart"></i> پیشاندانی کاری ڕۆژانەی گشتی';
+        showDailyTotalsBtn.classList.remove('btn-warning');
+        showDailyTotalsBtn.classList.add('btn-info');
+    }
+}
 
         // Show notification
         function showNotification(message, type) {
