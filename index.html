@@ -1082,6 +1082,14 @@
     
     <!-- Daily Work Totals Section -->
     <div class="daily-work-totals" id="dailyWorkTotalsSection" style="display: none;">
+        <!-- Daily Work Totals Section -->
+<div class="daily-work-totals" id="dailyWorkTotalsSection" style="display: none;">
+    <!-- Close button -->
+    <div class="text-end mb-3">
+        <button class="btn btn-sm btn-secondary" id="closeDailyTotalsBtn">
+            <i class="bi bi-x-circle"></i> داخستن
+        </button>
+    </div>
         <h5>کۆی گشتی کاری ڕۆژانە</h5>
         <div class="table-responsive">
             <table class="daily-work-totals-table">
@@ -2213,7 +2221,26 @@ document.addEventListener('click', function(event) {
             // Final confirm/reject notification buttons
             document.getElementById('finalConfirmNotificationBtn').addEventListener('click', finalConfirmNotification);
             document.getElementById('finalRejectNotificationBtn').addEventListener('click', finalRejectNotification);
+
+             // ADD THE CLOSE BUTTON WITH EVENT DELEGATION
+    document.addEventListener('click', function(event) {
+        if (event.target && event.target.id === 'closeDailyTotalsBtn') {
+            const dailyWorkTotalsSection = document.getElementById('dailyWorkTotalsSection');
+            const showDailyTotalsBtn = document.getElementById('showDailyTotalsBtn');
+            
+            // Hide the section
+            dailyWorkTotalsSection.style.display = 'none';
+            
+            // Show the open button again
+            showDailyTotalsBtn.style.display = 'inline-block';
         }
+    });
+}
+    
+    // Daily totals button (your existing one)
+    document.getElementById('showDailyTotalsBtn').addEventListener('click', showDailyWorkTotals);
+}
+        
 
        // Select all departments
 function selectAllDepartments() {
@@ -5463,35 +5490,24 @@ const selectedDepartments = Array.from(checkboxes).map(checkbox => checkbox.valu
 
        
 // Show daily work totals section
-// Show daily work totals section
+// Show daily work totals section (open only)
 function showDailyWorkTotals() {
-    console.log('showDailyWorkTotals function called!'); // Debug
-    
     const dailyWorkTotalsSection = document.getElementById('dailyWorkTotalsSection');
     const showDailyTotalsBtn = document.getElementById('showDailyTotalsBtn');
     
-    // Check current state
-    const isHidden = dailyWorkTotalsSection.style.display === 'none' || 
-                     dailyWorkTotalsSection.style.display === '';
+    // Always show the section when button is clicked
+    dailyWorkTotalsSection.style.display = 'block';
     
-    if (isHidden) {
-        // Show the section
-        dailyWorkTotalsSection.style.display = 'block';
-        showDailyTotalsBtn.innerHTML = '<i class="bi bi-eye-slash"></i> لاپەڕەی کاری ڕۆژانەی گشتی';
-        showDailyTotalsBtn.classList.remove('btn-info');
-        showDailyTotalsBtn.classList.add('btn-warning');
-        
-        // Update the totals with current filters
-        updateDailyWorkTotals();
-        console.log('Section shown'); // Debug
-    } else {
-        // Hide the section
-        dailyWorkTotalsSection.style.display = 'none';
-        showDailyTotalsBtn.innerHTML = '<i class="bi bi-bar-chart"></i> پیشاندانی کاری ڕۆژانەی گشتی';
-        showDailyTotalsBtn.classList.remove('btn-warning');
-        showDailyTotalsBtn.classList.add('btn-info');
-        console.log('Section hidden'); // Debug
+    // Hide the button after opening
+    showDailyTotalsBtn.style.display = 'none';
+    
+    // Show department filter for admin
+    if (currentUser.role === 'admin') {
+        document.getElementById('totalsDepartmentFilter').style.display = 'block';
     }
+    
+    // Update the totals with current filters
+    updateDailyWorkTotals();
 }
     </script>
 </body>
