@@ -1430,7 +1430,7 @@
                             <div class="employee-selection-container" id="projectEmployeesContainer">
                                 <!-- Employee checkboxes will be populated here -->
                             </div>
-                            <div class="form-text">کلیک بکە بۆ هەڵبژاردنی چەند کارمەند</div>
+                            <div class="form-text">کلیک بکە بۆ هەڵبژاردنی کارمەند</div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">هەڵسەنگاندنی کارمەندەکان (-100 بۆ 100)</label>
@@ -4026,7 +4026,7 @@
             document.getElementById('projectId').value = '';
             
             // Update employees checkboxes based on default department
-            updateProjectEmployeesCheckboxes();
+            ;
             
             const modal = new bootstrap.Modal(document.getElementById('addProjectModal'));
             modal.show();
@@ -4034,29 +4034,24 @@
 
         // Update project employees checkboxes
         function updateProjectEmployeesCheckboxes() {
-            const department = document.getElementById('projectDepartment').value;
             const employeesContainer = document.getElementById('projectEmployeesContainer');
             
             // Clear existing checkboxes
             employeesContainer.innerHTML = '';
-            
-            if (!department) {
-                employeesContainer.innerHTML = '<p class="text-muted">تکایە یەکەم بەشێک هەڵبژێرە</p>';
+
+            // Show ALL employees regardless of department
+            if (employees.length === 0) {
+                employeesContainer.innerHTML = '<p class="text-muted">هیچ کارمەندێک نییە</p>';
                 return;
             }
-            
-            // Filter employees by selected department
-            const departmentEmployees = employees.filter(emp => emp.department === department);
-            
-            if (departmentEmployees.length === 0) {
-                employeesContainer.innerHTML = '<p class="text-muted">هیچ کارمەندێک لەم بەشەدا نییە</p>';
-                return;
-            }
-            
-            // Add employees as checkboxes
-            departmentEmployees.forEach(employee => {
+
+            // Add ALL employees as checkboxes
+            employees.forEach(employee => {
                 const checkboxDiv = document.createElement('div');
                 checkboxDiv.className = 'employee-checkbox-label';
+
+            // Add department info to the label
+            const departmentDisplay = getDepartmentDisplayName(employee.department);
                 
                 checkboxDiv.innerHTML = `
                     <input type="checkbox" class="employee-checkbox" id="project-emp-${employee.id}" value="${employee.id}">
@@ -4069,33 +4064,29 @@
 
         // Update edit project employees checkboxes
         function updateEditProjectEmployeesCheckboxes() {
-            const department = document.getElementById('editProjectDepartment').value;
             const employeesContainer = document.getElementById('editProjectEmployeesContainer');
             
             // Clear existing checkboxes
             employeesContainer.innerHTML = '';
-            
-            if (!department) {
-                employeesContainer.innerHTML = '<p class="text-muted">تکایە یەکەم بەشێک هەڵبژێرە</p>';
+
+            // Show ALL employees regardless of department
+            if (employees.length === 0) {
+                employeesContainer.innerHTML = '<p class="text-muted">هیچ کارمەندێک نییە</p>';
                 return;
             }
-            
-            // Filter employees by selected department
-            const departmentEmployees = employees.filter(emp => emp.department === department);
-            
-            if (departmentEmployees.length === 0) {
-                employeesContainer.innerHTML = '<p class="text-muted">هیچ کارmەندێک لەم بەشەدا نییە</p>';
-                return;
-            }
-            
-            // Add employees as checkboxes
-            departmentEmployees.forEach(employee => {
+
+            // Add ALL employees as checkboxes
+            employees.forEach(employee => {
                 const checkboxDiv = document.createElement('div');
                 checkboxDiv.className = 'employee-checkbox-label';
+            
+            // Add department info to the label
+            const departmentDisplay = getDepartmentDisplayName(employee.department);
+            
                 
                 checkboxDiv.innerHTML = `
                     <input type="checkbox" class="employee-checkbox" id="edit-project-emp-${employee.id}" value="${employee.id}">
-                    <label for="edit-project-emp-${employee.id}">${employee.name} (${employee.id})</label>
+                    <label for="edit-project-emp-${employee.id}">${employee.name} (${employee.id}) - ${departmentDisplay}</label
                 `;
                 
                 employeesContainer.appendChild(checkboxDiv);
