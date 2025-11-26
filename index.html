@@ -2222,18 +2222,17 @@ document.addEventListener('click', function(event) {
             document.getElementById('finalConfirmNotificationBtn').addEventListener('click', finalConfirmNotification);
             document.getElementById('finalRejectNotificationBtn').addEventListener('click', finalRejectNotification);
 
-             // ADD THE CLOSE BUTTON WITH EVENT DELEGATION
-    document.addEventListener('click', function(event) {
-        if (event.target && event.target.id === 'closeDailyTotalsBtn') {
-            const dailyWorkTotalsSection = document.getElementById('dailyWorkTotalsSection');
-            const showDailyTotalsBtn = document.getElementById('showDailyTotalsBtn');
-            
-            // Hide the section
-            dailyWorkTotalsSection.style.display = 'none';
-            
-            // Show the open button again
-            showDailyTotalsBtn.style.display = 'inline-block';
-        }
+             / Setup event listeners
+function setupEventListeners() {
+    // ... all your other event listeners ...
+    
+    // SIMPLE DIRECT EVENT LISTENERS (remove event delegation):
+    document.getElementById('showDailyTotalsBtn').addEventListener('click', showDailyWorkTotals);
+    document.getElementById('closeDailyTotalsBtn').addEventListener('click', function() {
+        const dailyWorkTotalsSection = document.getElementById('dailyWorkTotalsSection');
+        const showDailyTotalsBtn = document.getElementById('showDailyTotalsBtn');
+        dailyWorkTotalsSection.style.display = 'none';
+        showDailyTotalsBtn.style.display = 'inline-block';
     });
 }
     
