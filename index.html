@@ -1242,9 +1242,18 @@
                                 <!-- Departments will be populated based on user type -->
                             </select>
                         </div>
+                        
                         <div class="mb-3">
                             <label for="specialWorkHours" class="form-label">کاتژمێری کارکردن</label>
-                            <input type="number" class="form-control work-hours-input" id="specialWorkHours" min="0.5" max="24" step="0.5" value="8" required>
+                            <div class="row">
+                                <div class="col-6">
+                            <input type="number" class="form-control" id="specialWorkHours" min="0" max="24" placeholder="کاتژمێر" required>
+                                    </div>
+                                <div class="col-6">
+                                    <input type="number" class="form-control" id="specialWorkMinutes" min="0" max="59" placeholder="خولەک" required>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">هەڵسەنگاندنی کارمەندەکان (-100 بۆ 100)</label>
@@ -1993,7 +2002,7 @@
             
             // Save work record buttons
             document.getElementById('saveDailyWorkBtn').addEventListener('click', saveDailyWorkRecord);
-            document.getElementById('saveOtherWorkBtn').addEventListener('click', saveOtherWorkRecord);
+            document.getElementById('saveOtherWorkBtn').addEventListener('click', );
             document.getElementById('saveSpecialDailyWorkBtn').addEventListener('click', saveSpecialDailyWorkRecord);
             document.getElementById('saveQuickRecordBtn').addEventListener('click', saveQuickRecord);
             
@@ -3480,6 +3489,15 @@
                 note,
                 createdAt: new Date().toISOString()
             };
+
+            // For electrical and mechanical departments, don't require supervisor approval for other works
+            if (employee.department === 'electrical-ac' || employee.department === 'mechanical') {
+                workRecord.needsConfirmation = false;
+                workRecord.confirmationStatus = 'confirmed';
+            } else {
+                workRecord.needsConfirmation = true;
+                workRecord.confirmationStatus = 'pending';
+            
             
             employee.otherWork.push(workRecord);
             
@@ -3500,8 +3518,11 @@
             const date = document.getElementById('specialWorkDate').value;
             const name = document.getElementById('specialWorkName').value;
             const workDepartment = document.getElementById('specialWorkDepartment').value;
-            const workHours = document.getElementById('specialWorkHours').value;
+            const workHours = parseInt(document.getElementById('specialWorkHours').value) || 0;
+            const workHours = parseInt(document.getElementById('specialWorkHours').value) || 0;
             const note = document.getElementById('specialWorkNote').value;
+
+            const totalWorkHours = workHours + (workMinutes / 60);
             
             if (!date || !name || !workDepartment || !workHours) {
                 showNotification('تکایە هەموو خانە پێویستەکان پڕبکەرەوە', 'danger');
@@ -3550,7 +3571,9 @@
                     rate: employeeRatings[employeeId],
                     note,
                     workDepartment,
-                    workHours,
+                    workHours: totalWorkHours,
+                    workHoursInput: workHours,
+                    workMinutes: workMinutes,
                     isSpecial: true,
                     createdBy: currentUser.username,
                     createdAt: new Date().toISOString()
