@@ -2214,14 +2214,22 @@ function setupEventListeners() {
     document.getElementById('finalConfirmNotificationBtn').addEventListener('click', finalConfirmNotification);
     document.getElementById('finalRejectNotificationBtn').addEventListener('click', finalRejectNotification);
     
-    // SIMPLE EVENT LISTENERS FOR DAILY TOTALS (no event delegation):
-    document.getElementById('showDailyTotalsBtn').addEventListener('click', showDailyWorkTotals);
-    document.getElementById('closeDailyTotalsBtn').addEventListener('click', function() {
-        const dailyWorkTotalsSection = document.getElementById('dailyWorkTotalsSection');
-        const showDailyTotalsBtn = document.getElementById('showDailyTotalsBtn');
-        dailyWorkTotalsSection.style.display = 'none';
+// Close daily totals button
+document.getElementById('closeDailyTotalsBtn').addEventListener('click', function() {
+    const dailyWorkTotalsSection = document.getElementById('dailyWorkTotalsSection');
+    const showDailyTotalsBtn = document.getElementById('showDailyTotalsBtn');
+    const totalsDepartmentFilter = document.getElementById('totalsDepartmentFilter');
+    
+    dailyWorkTotalsSection.style.display = 'none';
+    
+    if (showDailyTotalsBtn) {
         showDailyTotalsBtn.style.display = 'inline-block';
-    });
+    }
+    
+    if (totalsDepartmentFilter && currentUser && currentUser.role === 'admin') {
+        totalsDepartmentFilter.style.display = 'none';
+    }
+});
 }
         
 
@@ -2384,12 +2392,12 @@ function applyTotalsDepartmentFilter() {
             const totalsDepartmentFilter = document.getElementById('totalsDepartmentFilter');
             totalsDepartmentFilter.style.display = (currentUser.role === 'admin') ? 'block' : 'none';
 
-             // Add direct event listener for daily totals button
-    const dailyTotalsBtn = document.getElementById('showDailyTotalsBtn');
-    if (dailyTotalsBtn) {
-        dailyTotalsBtn.onclick = showDailyWorkTotals;
-        console.log('Daily totals button event listener added'); // Debug
+              // Make sure daily totals button is visible
+    const showDailyTotalsBtn = document.getElementById('showDailyTotalsBtn');
+    if (showDailyTotalsBtn) {
+        showDailyTotalsBtn.style.display = 'inline-block';
     }
+            
             
             // Load and display employees
             renderEmployeeTable();
@@ -3003,6 +3011,15 @@ function sortDailyWorkTotals(column) {
         function backToDashboard() {
             document.getElementById('workRecordsPage').style.display = 'none';
             document.getElementById('dashboardPage').style.display = 'block';
+
+            // Make sure daily totals button is visible when returning to dashboard
+    const showDailyTotalsBtn = document.getElementById('showDailyTotalsBtn');
+    if (showDailyTotalsBtn) {
+        showDailyTotalsBtn.style.display = 'inline-block';
+    }
+    
+    // Hide daily work totals section
+    document.getElementById('dailyWorkTotalsSection').style.display = 'none';
 
             updateDailyWorkTotals();
         }
@@ -5473,24 +5490,31 @@ const selectedDepartments = Array.from(checkboxes).map(checkbox => checkbox.valu
 
        
 // Show daily work totals section
-// Show daily work totals section (open only)
 function showDailyWorkTotals() {
+    console.log('showDailyWorkTotals function called'); // Debug log
+    
     const dailyWorkTotalsSection = document.getElementById('dailyWorkTotalsSection');
     const showDailyTotalsBtn = document.getElementById('showDailyTotalsBtn');
+    const totalsDepartmentFilter = document.getElementById('totalsDepartmentFilter');
     
     // Always show the section when button is clicked
     dailyWorkTotalsSection.style.display = 'block';
     
     // Hide the button after opening
-    showDailyTotalsBtn.style.display = 'none';
+    if (showDailyTotalsBtn) {
+        showDailyTotalsBtn.style.display = 'none';
+    }
     
     // Show department filter for admin
-    if (currentUser.role === 'admin') {
-        document.getElementById('totalsDepartmentFilter').style.display = 'block';
+    if (currentUser && currentUser.role === 'admin' && totalsDepartmentFilter) {
+        totalsDepartmentFilter.style.display = 'block';
     }
     
     // Update the totals with current filters
     updateDailyWorkTotals();
+    
+    // Prevent any default behavior
+    return false;
 }
     </script>
 </body>
