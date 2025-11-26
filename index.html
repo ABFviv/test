@@ -2066,164 +2066,155 @@
             }
         }
 
-        // Setup event listeners
-        function setupEventListeners() {
-            // Login form
-            document.getElementById('loginForm').addEventListener('submit', handleLogin);
-            
-            // Logout button
-            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
-            
-            // Period filter
-            document.getElementById('periodType').addEventListener('change', toggleCustomPeriod);
-            document.getElementById('applyPeriodBtn').addEventListener('click', applyPeriodFilter);
-            
-            // Department filter for daily work totals
-            document.getElementById('applyTotalsFilterBtn').addEventListener('click', applyTotalsDepartmentFilter);
-            document.getElementById('selectAllDepartmentsBtn').addEventListener('click', selectAllDepartments);
-            document.getElementById('clearDepartmentsBtn').addEventListener('click', clearDepartments);
-            
-            // Filter buttons
-            document.getElementById('filterBtn').addEventListener('click', applyFilters);
-            document.getElementById('resetBtn').addEventListener('click', resetFilters);
-            
-            // Refresh button
-            document.getElementById('refreshBtn').addEventListener('click', refreshData);
-            
-            // Add employee button
-            document.getElementById('addEmployeeBtn').addEventListener('click', openAddEmployeeModal);
-            
-            // Test Firebase button
-            document.getElementById('testFirebaseBtn').addEventListener('click', checkFirebaseConnection);
-            
-            // Export button
-            document.getElementById('exportBtn').addEventListener('click', exportToExcel);
-            
-            // Print button
-            document.getElementById('printBtn').addEventListener('click', printData);
-            
-            // Save employee button
-            document.getElementById('saveEmployeeBtn').addEventListener('click', saveEmployee);
-            
-            // Back to dashboard button
-            document.getElementById('backToDashboardBtn').addEventListener('click', backToDashboard);
-            
-            // Back to dashboard from projects button
-            document.getElementById('backToDashboardFromProjectsBtn').addEventListener('click', backToDashboardFromProjects);
-            
-            // Back to dashboard from notifications button
-            document.getElementById('backToDashboardFromNotificationsBtn').addEventListener('click', backToDashboardFromNotifications);
-            
-            // Record tabs
-            document.getElementById('dailyWorkTab').addEventListener('click', function() {
-                switchRecordType('daily');
-
-            // Use event delegation for the daily totals button
-document.addEventListener('click', function(event) {
-    if (event.target && event.target.id === 'showDailyTotalsBtn') {
-        showDailyWorkTotals();
-    }
-});
-                
-            });
-            
-            document.getElementById('otherWorkTab').addEventListener('click', function() {
-                switchRecordType('other');
-            });
-            
-            // Add work record buttons
-            document.getElementById('addRecordBtn').addEventListener('click', function() {
-                const employee = employees.find(emp => emp.id === currentEmployeeId);
-                if (!employee) return;
-                
-                if (employee.department === 'mechanical' || employee.department === 'electrical-ac') {
-                    openAddSpecialDailyWorkModal();
-                } else {
-                    if (currentRecordType === 'daily') {
-                        openAddDailyWorkModal();
-                    } else {
-                        openAddOtherWorkModal();
-                    }
-                }
-            });
-            
-            // Add special record button
-            document.getElementById('addSpecialRecordBtn').addEventListener('click', openAddSpecialDailyWorkModal);
-            
-            // Special daily work button
-            document.getElementById('specialDailyWorkBtn').addEventListener('click', openAddSpecialDailyWorkModal);
-            
-            // Quick record button
-            document.getElementById('quickRecordBtn').addEventListener('click', openQuickRecordModal);
-            
-            // Save work record buttons
-            document.getElementById('saveDailyWorkBtn').addEventListener('click', saveDailyWorkRecord);
-            document.getElementById('saveOtherWorkBtn').addEventListener('click', saveOtherWorkRecord);
-            document.getElementById('saveSpecialDailyWorkBtn').addEventListener('click', saveSpecialDailyWorkRecord);
-            document.getElementById('saveQuickRecordBtn').addEventListener('click', saveQuickRecord);
-            
-            // Rating range inputs
-            document.getElementById('dailyWorkRating').addEventListener('input', function() {
-                document.getElementById('dailyWorkRatingValue').textContent = this.value;
-            });
-            
-            document.getElementById('otherWorkRating').addEventListener('input', function() {
-                document.getElementById('otherWorkRatingValue').textContent = this.value;
-            });
-            
-            document.getElementById('editWorkRating').addEventListener('input', function() {
-                document.getElementById('editWorkRatingValue').textContent = this.value;
-            });
-            
-            document.getElementById('quickRecordRating').addEventListener('input', function() {
-                document.getElementById('quickRecordRatingValue').textContent = this.value;
-            });
-            
-            // Save edited work record button
-            document.getElementById('saveEditWorkRecordBtn').addEventListener('click', saveEditedWorkRecord);
-            
-            // Export and print records buttons
-            document.getElementById('exportRecordsBtn').addEventListener('click', exportRecordsToExcel);
-            document.getElementById('printRecordsBtn').addEventListener('click', printRecords);
-            
-            // Projects button
-            document.getElementById('projectsBtn').addEventListener('click', showProjectsPage);
-            
-            // Add project button
-            document.getElementById('addProjectBtn').addEventListener('click', openAddProjectModal);
-            
-            // Save project button
-            document.getElementById('saveProjectBtn').addEventListener('click', saveProject);
-            
-            // Save edit project button
-            document.getElementById('saveEditProjectBtn').addEventListener('click', saveEditProject);
-            
-            // Confirm delete employee button
-            document.getElementById('confirmDeleteEmployeeBtn').addEventListener('click', confirmDeleteEmployee);
-            
-            // Department change for project employees
-            document.getElementById('projectDepartment').addEventListener('change', updateProjectEmployeesCheckboxes);
-            document.getElementById('editProjectDepartment').addEventListener('change', updateEditProjectEmployeesCheckboxes);
-            
-            // Special work department change
-            document.getElementById('specialWorkDepartment').addEventListener('change', updateSpecialWorkEmployees);
-            
-            // Special work employees change
-            document.getElementById('specialWorkEmployeesContainer').addEventListener('change', updateEmployeeRatings);
-            
-            // Project employees change
-            document.getElementById('projectEmployeesContainer').addEventListener('change', updateProjectEmployeeRatings);
-            document.getElementById('editProjectEmployeesContainer').addEventListener('change', updateEditProjectEmployeeRatings);
-            
-            // Notifications button
-            document.getElementById('notificationsBtn').addEventListener('click', showNotificationsPage);
-            
-            // Final confirm/reject notification buttons
-            document.getElementById('finalConfirmNotificationBtn').addEventListener('click', finalConfirmNotification);
-            document.getElementById('finalRejectNotificationBtn').addEventListener('click', finalRejectNotification);
-
+// Setup event listeners
+function setupEventListeners() {
+    // Login form
+    document.getElementById('loginForm').addEventListener('submit', handleLogin);
     
-    // SIMPLE DIRECT EVENT LISTENERS (remove event delegation):
+    // Logout button
+    document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+    
+    // Period filter
+    document.getElementById('periodType').addEventListener('change', toggleCustomPeriod);
+    document.getElementById('applyPeriodBtn').addEventListener('click', applyPeriodFilter);
+    
+    // Department filter for daily work totals
+    document.getElementById('applyTotalsFilterBtn').addEventListener('click', applyTotalsDepartmentFilter);
+    document.getElementById('selectAllDepartmentsBtn').addEventListener('click', selectAllDepartments);
+    document.getElementById('clearDepartmentsBtn').addEventListener('click', clearDepartments);
+    
+    // Filter buttons
+    document.getElementById('filterBtn').addEventListener('click', applyFilters);
+    document.getElementById('resetBtn').addEventListener('click', resetFilters);
+    
+    // Refresh button
+    document.getElementById('refreshBtn').addEventListener('click', refreshData);
+    
+    // Add employee button
+    document.getElementById('addEmployeeBtn').addEventListener('click', openAddEmployeeModal);
+    
+    // Test Firebase button
+    document.getElementById('testFirebaseBtn').addEventListener('click', checkFirebaseConnection);
+    
+    // Export button
+    document.getElementById('exportBtn').addEventListener('click', exportToExcel);
+    
+    // Print button
+    document.getElementById('printBtn').addEventListener('click', printData);
+    
+    // Save employee button
+    document.getElementById('saveEmployeeBtn').addEventListener('click', saveEmployee);
+    
+    // Back to dashboard button
+    document.getElementById('backToDashboardBtn').addEventListener('click', backToDashboard);
+    
+    // Back to dashboard from projects button
+    document.getElementById('backToDashboardFromProjectsBtn').addEventListener('click', backToDashboardFromProjects);
+    
+    // Back to dashboard from notifications button
+    document.getElementById('backToDashboardFromNotificationsBtn').addEventListener('click', backToDashboardFromNotifications);
+    
+    // Record tabs
+    document.getElementById('dailyWorkTab').addEventListener('click', function() {
+        switchRecordType('daily');
+    });
+    
+    document.getElementById('otherWorkTab').addEventListener('click', function() {
+        switchRecordType('other');
+    });
+    
+    // Add work record buttons
+    document.getElementById('addRecordBtn').addEventListener('click', function() {
+        const employee = employees.find(emp => emp.id === currentEmployeeId);
+        if (!employee) return;
+        
+        if (employee.department === 'mechanical' || employee.department === 'electrical-ac') {
+            openAddSpecialDailyWorkModal();
+        } else {
+            if (currentRecordType === 'daily') {
+                openAddDailyWorkModal();
+            } else {
+                openAddOtherWorkModal();
+            }
+        }
+    });
+    
+    // Add special record button
+    document.getElementById('addSpecialRecordBtn').addEventListener('click', openAddSpecialDailyWorkModal);
+    
+    // Special daily work button
+    document.getElementById('specialDailyWorkBtn').addEventListener('click', openAddSpecialDailyWorkModal);
+    
+    // Quick record button
+    document.getElementById('quickRecordBtn').addEventListener('click', openQuickRecordModal);
+    
+    // Save work record buttons
+    document.getElementById('saveDailyWorkBtn').addEventListener('click', saveDailyWorkRecord);
+    document.getElementById('saveOtherWorkBtn').addEventListener('click', saveOtherWorkRecord);
+    document.getElementById('saveSpecialDailyWorkBtn').addEventListener('click', saveSpecialDailyWorkRecord);
+    document.getElementById('saveQuickRecordBtn').addEventListener('click', saveQuickRecord);
+    
+    // Rating range inputs
+    document.getElementById('dailyWorkRating').addEventListener('input', function() {
+        document.getElementById('dailyWorkRatingValue').textContent = this.value;
+    });
+    
+    document.getElementById('otherWorkRating').addEventListener('input', function() {
+        document.getElementById('otherWorkRatingValue').textContent = this.value;
+    });
+    
+    document.getElementById('editWorkRating').addEventListener('input', function() {
+        document.getElementById('editWorkRatingValue').textContent = this.value;
+    });
+    
+    document.getElementById('quickRecordRating').addEventListener('input', function() {
+        document.getElementById('quickRecordRatingValue').textContent = this.value;
+    });
+    
+    // Save edited work record button
+    document.getElementById('saveEditWorkRecordBtn').addEventListener('click', saveEditedWorkRecord);
+    
+    // Export and print records buttons
+    document.getElementById('exportRecordsBtn').addEventListener('click', exportRecordsToExcel);
+    document.getElementById('printRecordsBtn').addEventListener('click', printRecords);
+    
+    // Projects button
+    document.getElementById('projectsBtn').addEventListener('click', showProjectsPage);
+    
+    // Add project button
+    document.getElementById('addProjectBtn').addEventListener('click', openAddProjectModal);
+    
+    // Save project button
+    document.getElementById('saveProjectBtn').addEventListener('click', saveProject);
+    
+    // Save edit project button
+    document.getElementById('saveEditProjectBtn').addEventListener('click', saveEditProject);
+    
+    // Confirm delete employee button
+    document.getElementById('confirmDeleteEmployeeBtn').addEventListener('click', confirmDeleteEmployee);
+    
+    // Department change for project employees
+    document.getElementById('projectDepartment').addEventListener('change', updateProjectEmployeesCheckboxes);
+    document.getElementById('editProjectDepartment').addEventListener('change', updateEditProjectEmployeesCheckboxes);
+    
+    // Special work department change
+    document.getElementById('specialWorkDepartment').addEventListener('change', updateSpecialWorkEmployees);
+    
+    // Special work employees change
+    document.getElementById('specialWorkEmployeesContainer').addEventListener('change', updateEmployeeRatings);
+    
+    // Project employees change
+    document.getElementById('projectEmployeesContainer').addEventListener('change', updateProjectEmployeeRatings);
+    document.getElementById('editProjectEmployeesContainer').addEventListener('change', updateEditProjectEmployeeRatings);
+    
+    // Notifications button
+    document.getElementById('notificationsBtn').addEventListener('click', showNotificationsPage);
+    
+    // Final confirm/reject notification buttons
+    document.getElementById('finalConfirmNotificationBtn').addEventListener('click', finalConfirmNotification);
+    document.getElementById('finalRejectNotificationBtn').addEventListener('click', finalRejectNotification);
+    
+    // SIMPLE EVENT LISTENERS FOR DAILY TOTALS (no event delegation):
     document.getElementById('showDailyTotalsBtn').addEventListener('click', showDailyWorkTotals);
     document.getElementById('closeDailyTotalsBtn').addEventListener('click', function() {
         const dailyWorkTotalsSection = document.getElementById('dailyWorkTotalsSection');
@@ -2231,10 +2222,6 @@ document.addEventListener('click', function(event) {
         dailyWorkTotalsSection.style.display = 'none';
         showDailyTotalsBtn.style.display = 'inline-block';
     });
-}
-    
-    // Daily totals button (your existing one)
-    document.getElementById('showDailyTotalsBtn').addEventListener('click', showDailyWorkTotals);
 }
         
 
