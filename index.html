@@ -2459,17 +2459,25 @@ function applyTotalsDepartmentFilter() {
             }
         }
 
-        // Render employee table
-        function renderEmployeeTable(filteredEmployees = null) {
-            const tbody = document.getElementById('employeeTableBody');
-            tbody.innerHTML = '';
-            
-            let employeesToShow = filteredEmployees || employees;
-            
-            // If not admin, filter by department
-            if (currentUser.role !== 'admin') {
-                employeesToShow = employeesToShow.filter(emp => emp.department === currentUser.department);
-            }
+// Render employee table
+function renderEmployeeTable(filteredEmployees = null) {
+    const tbody = document.getElementById('employeeTableBody');
+    tbody.innerHTML = '';
+    
+    let employeesToShow = filteredEmployees || employees;
+    
+    // If not admin, filter by department
+    if (currentUser.role !== 'admin') {
+        employeesToShow = employeesToShow.filter(emp => emp.department === currentUser.department);
+    } else {
+        // For admin, apply department filter from checkboxes if any are selected
+        const checkboxes = document.querySelectorAll('.department-checkbox:checked');
+        const selectedDepartments = Array.from(checkboxes).map(checkbox => checkbox.value);
+        
+        if (selectedDepartments.length > 0) {
+            employeesToShow = employeesToShow.filter(emp => selectedDepartments.includes(emp.department));
+        }
+    }
             
             // Apply sorting
             employeesToShow = sortEmployees(employeesToShow);
@@ -2660,30 +2668,32 @@ function applyTotalsDepartmentFilter() {
             });
         }
 
-        // Sort table function
-        function sortTable(column) {
-            if (sortColumn === column) {
-                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
-            } else {
-                sortColumn = column;
-                sortDirection = 'asc';
-            }
-            
-            renderEmployeeTable();
-            updateSortIcons();
-        }
+// Sort table function
+function sortTable(column) {
+    if (sortColumn === column) {
+        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+        sortColumn = column;
+        sortDirection = 'asc';
+    }
+    
+    // Apply current filters before rendering
+    applyFilters();
+    updateSortIcons();
+}
 
         // Sort daily work totals function
-        function sortDailyWorkTotals(column) {
-            if (dailyWorkTotalsSortColumn === column) {
-                dailyWorkTotalsSortDirection = dailyWorkTotalsSortDirection === 'asc' ? 'desc' : 'asc';
-            } else {
-                dailyWorkTotalsSortColumn = column;
-                dailyWorkTotalsSortDirection = 'asc';
-            }
-            
-            updateDailyWorkTotals();
-        }
+       // Sort daily work totals function
+function sortDailyWorkTotals(column) {
+    if (dailyWorkTotalsSortColumn === column) {
+        dailyWorkTotalsSortDirection = dailyWorkTotalsSortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+        dailyWorkTotalsSortColumn = column;
+        dailyWorkTotalsSortDirection = 'asc';
+    }
+    
+    updateDailyWorkTotals(); // This already respects department filters
+}
 
         // Update sort icons
         function updateSortIcons() {
