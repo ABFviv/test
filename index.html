@@ -5448,7 +5448,8 @@ const selectedDepartments = Array.from(checkboxes).map(checkbox => checkbox.valu
             }
         }
 
-        // Show daily work totals section
+       
+// Show daily work totals section
 function showDailyWorkTotals() {
     const dailyWorkTotalsSection = document.getElementById('dailyWorkTotalsSection');
     const showDailyTotalsBtn = document.getElementById('showDailyTotalsBtn');
@@ -5456,7 +5457,7 @@ function showDailyWorkTotals() {
     if (dailyWorkTotalsSection.style.display === 'none') {
         // Show the section
         dailyWorkTotalsSection.style.display = 'block';
-        showDailyTotalsBtn.innerHTML = '<i class="bi bi-bar-chart"></i> لاپەڕەی کاری ڕۆژانەی گشتی';
+        showDailyTotalsBtn.innerHTML = '<i class="bi bi-eye-slash"></i> لاپەڕەی کاری ڕۆژانەی گشتی';
         showDailyTotalsBtn.classList.remove('btn-info');
         showDailyTotalsBtn.classList.add('btn-warning');
         
