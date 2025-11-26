@@ -1486,7 +1486,7 @@
                             <div class="employee-selection-container" id="editProjectEmployeesContainer">
                                 <!-- Employee checkboxes will be populated here -->
                             </div>
-                            <div class="form-text">کلیک بکە بۆ هەڵبژاردنی چەند کارmەند</div>
+                            <div class="form-text">کلیک بکە بۆ هەڵبژاردنی کارمەند</div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">هەڵسەنگاندنی کارمەندەکان (-100 بۆ 100)</label>
@@ -4034,24 +4034,32 @@
 
         // Update project employees checkboxes
         function updateProjectEmployeesCheckboxes() {
+            const department = document.getElementById('projectDepartment').value;
             const employeesContainer = document.getElementById('projectEmployeesContainer');
             
             // Clear existing checkboxes
             employeesContainer.innerHTML = '';
 
-            // Show ALL employees regardless of department
+            if (!department) {
+                employeesContainer.innerHTML = '<p class="text-muted">تکایە بەشێک هەڵبژێرە</p>';
+                return;
+            }
+
+            // Filter employees by selected department
+            const departmentEmployees = employees.filter(emp => emp.department === department);
+
             if (employees.length === 0) {
                 employeesContainer.innerHTML = '<p class="text-muted">هیچ کارمەندێک نییە</p>';
                 return;
             }
 
             // Add ALL employees as checkboxes
-            employees.forEach(employee => {
+            departmentEmployees.forEach(employee => {
                 const checkboxDiv = document.createElement('div');
                 checkboxDiv.className = 'employee-checkbox-label';
 
-            // Add department info to the label
-            const departmentDisplay = getDepartmentDisplayName(employee.department);
+                const isAlreadySelected = isEmployeeSelectedInProject(employee.id);
+            
                 
                 checkboxDiv.innerHTML = `
                     <input type="checkbox" class="employee-checkbox" id="project-emp-${employee.id}" value="${employee.id}">
@@ -4064,24 +4072,31 @@
 
         // Update edit project employees checkboxes
         function updateEditProjectEmployeesCheckboxes() {
+            const department = document.getElementById('editProjectDepartment').value;
             const employeesContainer = document.getElementById('editProjectEmployeesContainer');
             
             // Clear existing checkboxes
             employeesContainer.innerHTML = '';
 
-            // Show ALL employees regardless of department
+            if (!department) {
+                employeesContainer.innerHTML = '<p class="text-muted">تکایە یەکەم بەشێک هەڵبژێرە</p>';
+                return;
+            }
+
+            // Filter employees by selected department
+            const departmentEmployees = employees.filter(emp => emp.department === department);
+
             if (employees.length === 0) {
                 employeesContainer.innerHTML = '<p class="text-muted">هیچ کارمەندێک نییە</p>';
                 return;
             }
 
             // Add ALL employees as checkboxes
-            employees.forEach(employee => {
+            departmentEmployees.forEach(employee => {
                 const checkboxDiv = document.createElement('div');
                 checkboxDiv.className = 'employee-checkbox-label';
-            
-            // Add department info to the label
-            const departmentDisplay = getDepartmentDisplayName(employee.department);
+
+                const isAlreadySelected = isEmployeeSelectedInEditProject(employee.id);
             
                 
                 checkboxDiv.innerHTML = `
@@ -4091,6 +4106,9 @@
                 
                 employeesContainer.appendChild(checkboxDiv);
             });
+            // Update ratings after loading employees
+            updateEditProjectEmployeeRatings();
+            
         }
 
         // Save project
