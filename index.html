@@ -1294,8 +1294,8 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="employeeDepartment" class="form-label">بەش</label>
-                                <select class="form-select" id="employeeDepartment" required>
-                                    <option value="">بەش هەڵبژێرە</option>
+                                <select class="form-select" id="projectDepartment">
+                                    <option value="all">هەموو بەشەکان</option>
                                     <option value="crushing-prep">هاڕین و ئامادەکردن</option>
                                     <option value="cutting-setting">بڕین و بارکردن</option>
                                     <option value="klin">فڕن</option>
@@ -1469,8 +1469,8 @@
                         </div>
                         <div class="mb-3">
                             <label for="editProjectDepartment" class="form-label">هەڵبژاردنی بەش</label>
-                            <select class="form-select" id="editProjectDepartment" required>
-                                <option value="">بەش هەڵبژێرە</option>
+                            <select class="form-select" id="editProjectDepartment">
+                                <option value="all">هەموو بەشەکان</option>
                                 <option value="crushing-prep">هاڕین و ئامادەکردن</option>
                                 <option value="cutting-setting">بڕین و بارکردن</option>
                                 <option value="klin">فڕن</option>
@@ -4040,27 +4040,44 @@
             // Clear existing checkboxes
             employeesContainer.innerHTML = '';
 
-            if (!department) {
-                employeesContainer.innerHTML = '<p class="text-muted">تکایە بەشێک هەڵبژێرە</p>';
+            let employeesToShow = [];
+
+            if (department === 'all') {
+                employeesToShow = employees;
+            } else if (department) {
+                employeesToShow = employees.filter(emp => emp.department === department);
+            } else {
+                employeesContainer.innerHTML = '<p class="text-muted">تکایە بەشێک هەڵبژێرە
+        </p>';
                 return;
             }
-
-            // Filter employees by selected department
-            const departmentEmployees = employees.filter(emp => emp.department === department);
-
-            if (employees.length === 0) {
-                employeesContainer.innerHTML = '<p class="text-muted">هیچ کارمەندێک نییە</p>';
-                return;
-            }
-
-            // Add ALL employees as checkboxes
-            departmentEmployees.forEach(employee => {
-                const checkboxDiv = document.createElement('div');
-                checkboxDiv.className = 'employee-checkbox-label';
-
-                const isAlreadySelected = isEmployeeSelectedInProject(employee.id);
             
-                
+            // Group employees by department for better organization
+            const employeesByDepartment = {};
+            employeesToShow.forEach(employee => {
+                if (!employeesByDepartment[employee.department]) {
+                    employeesByDepartment[employee.department] = [];
+                }
+                employeesByDepartment[employee.department].push(employee);
+            });
+
+            // Add employees grouped by department
+            Object.keys(employeesByDepartment).forEach(dept => {
+                const departmentHeader = document.createElement('div');
+                departmentHeader.className = 'department-header';
+                departmentHeader.innerHTML = `<strong>${getDepartmentDisplayName(dept)}</strong>`;
+                departmentHeader.style.marginTop = '10px';
+                departmentHeader.style.marginBottom = '5px';
+                departmentHeader.style.paddingBottom = '5px';
+                departmentHeader.style.borderBottom = '1px solid #eee';
+                employeesContainer.appendChild(departmentHeader);
+
+                employeesByDepartment[dept].forEach(employee => {
+                    const checkboxDiv = document.createElement('div');
+                    checkboxDiv.className = 'employee-checkbox-label';
+
+                    const isAlreadySelected = selectedProjectEmployees.includes(employee.id);
+            
                 checkboxDiv.innerHTML = `
                     <input type="checkbox" class="employee-checkbox" id="project-emp-${employee.id}" value="${employee.id}" ${isAlreadySelected ? 'checked' : ''}>
                     <label for="project-emp-${employee.id}">${employee.name} (${employee.id})</label>
@@ -4083,6 +4100,7 @@
                 
                 employeesContainer.appendChild(checkboxDiv);
             });
+        });
              updateProjectEmployeeRatings();
         }
 
@@ -4094,29 +4112,53 @@
             // Clear existing checkboxes
             employeesContainer.innerHTML = '';
 
-            if (!department) {
-                employeesContainer.innerHTML = '<p class="text-muted">تکایە یەکەم بەشێک هەڵبژێرە</p>';
+            let employeesToShow = [];
+
+            if (department === 'all') {
+                // Show all employees from all departments
+                employeesToShow = employees;
+            } else if (department) {
+               // Filter employees by selected department
+                employeesToShow = employees.filter(emp => emp.department === department);
+            } else {
+                employeesContainer.innerHTML = '<p class="text-muted">تکایە بەشێک هەڵبژێرە</p>';
                 return;
             }
 
-            // Filter employees by selected department
-            const departmentEmployees = employees.filter(emp => emp.department === department);
-
-            if (employees.length === 0) {
-                employeesContainer.innerHTML = '<p class="text-muted">هیچ کارمەندێک نییە</p>';
-                return;
+             if (employeesToShow.length === 0) {
+                 employeesContainer.innerHTML = '<p class="text-muted">هیچ کارمەندێک نییە</p>';
+                 return;
             }
 
-            // Add ALL employees as checkboxes
-            departmentEmployees.forEach(employee => {
-                const checkboxDiv = document.createElement('div');
-                checkboxDiv.className = 'employee-checkbox-label';
+             // Group employees by department for better organization
+             const employeesByDepartment = {};
+             employeesToShow.forEach(employee => {
+                 if (!employeesByDepartment[employee.department]) {
+                     employeesByDepartment[employee.department] = [];
+                  }
+                  employeesByDepartment[employee.department].push(employee);
+              });
+    
+              // Add employees grouped by department
+              Object.keys(employeesByDepartment).forEach(dept => {
+                  const departmentHeader = document.createElement('div');
+                  departmentHeader.className = 'department-header';
+                  departmentHeader.innerHTML = `<strong>${getDepartmentDisplayName(dept)}</strong>`;
+                  departmentHeader.style.marginTop = '10px';
+                  departmentHeader.style.marginBottom = '5px';
+                  departmentHeader.style.paddingBottom = '5px';
+                  departmentHeader.style.borderBottom = '1px solid #eee';
+                  employeesContainer.appendChild(departmentHeader);
 
-                const isAlreadySelected = isEmployeeSelectedInEditProject(employee.id);
+                  employeesByDepartment[dept].forEach(employee => {
+                     const checkboxDiv = document.createElement('div');
+                     checkboxDiv.className = 'employee-checkbox-label';
+
+                     const isAlreadySelected = selectedEditProjectEmployees.includes(employee.id);
             
                 
                 checkboxDiv.innerHTML = `
-                    <input type="checkbox" class="employee-checkbox" id="edit-project-emp-${employee.id}" value="${employee.id}" ${isAlreadySelected ? 'checked' : ''}>
+                  <input type="checkbox" class="employee-checkbox" id="edit-project-emp-${employee.id}" value="${employee.id}" ${isAlreadySelected ? 'checked' : ''}>
                     <label for="edit-project-emp-${employee.id}">${employee.name} (${employee.id})</label>
                 `;
 
@@ -4132,11 +4174,12 @@
                         selectedEditProjectEmployees = selectedEditProjectEmployees.filter(id => id !== employee.id);
                     }
                     updateEditProjectEmployeeRatings();
-                    });
+                });
                 
                 
                 employeesContainer.appendChild(checkboxDiv);
             });
+        });      
             // Update ratings after loading employees
             updateEditProjectEmployeeRatings();
             
@@ -4153,7 +4196,7 @@
             
             const details = document.getElementById('projectDetails').value;
             
-            if (!name || !department || selectedEmployees.length === 0) {
+            if (!name || selectedEmployees.length === 0) {
                 showNotification('تکایە هەموو خانە پێویستەکان پڕبکەرەوە', 'danger');
                 return;
             }
@@ -4363,7 +4406,7 @@
             
             const details = document.getElementById('editProjectDetails').value;
             
-            if (!name || !department || selectedEmployees.length === 0) {
+            if (!name || selectedEmployees.length === 0) {
                 showNotification('تکایە هەموو خانە پێویستەکان پڕبکەرەوە', 'danger');
                 return;
             }
