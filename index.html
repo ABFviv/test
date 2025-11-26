@@ -1651,6 +1651,9 @@
         let employeeToDelete = null;
         let notificationToConfirm = null;
         let notificationToReject = null;
+
+        let selectedProjectEmployees = [];
+        let selectedEditProjectEmployees = [];
         
         // Period filter variables
         let periodFilter = {
@@ -3330,25 +3333,22 @@
         function updateProjectEmployeeRatings() {
             const ratingsContainer = document.getElementById('projectEmployeeRatingsContainer');
             ratingsContainer.innerHTML = '';
-            
-            // Get selected employees
-            const selectedCheckboxes = document.querySelectorAll('#projectEmployeesContainer .employee-checkbox:checked');
-            
-            if (selectedCheckboxes.length === 0) {
+
+            if (selectedProjectEmployees.length === 0) {
                 ratingsContainer.innerHTML = '<p class="text-muted">تکایە یەکەم کارمەندێک هەڵبژێرە</p>';
                 return;
             }
             
+            
             // Add rating input for each selected employee
-            selectedCheckboxes.forEach(checkbox => {
-                const employeeId = checkbox.value;
+            selectedProjectEmployees.forEach(employeeId => {
                 const employee = employees.find(emp => emp.id === employeeId);
                 
                 if (employee) {
                     const ratingRow = document.createElement('div');
                     ratingRow.className = 'employee-rating-row';
                     ratingRow.innerHTML = `
-                        <div class="employee-rating-name">${employee.name}</div>
+                        <div class="employee-rating-name">${employee.name} (${getDepartmentDisplayName(employee.department)})</div>
                         <div class="employee-rating-slider">
                             <input type="number" class="form-control employee-rating" min="-100" max="100" value="0" data-employee="${employeeId}">
                         </div>
@@ -3361,29 +3361,26 @@
 
         // Update edit project employee ratings when employees are selected
         function updateEditProjectEmployeeRatings() {
-            const ratingsContainer = document.getElementById('editProjectEmployeeRatingsContainer');
+            ratingsContainer.innerHTML = '<p class="text-muted">تکایە یەکەم کارمەندێک هەڵبژێرە</p>';
             ratingsContainer.innerHTML = '';
             
-            // Get selected employees
-            const selectedCheckboxes = document.querySelectorAll('#editProjectEmployeesContainer .employee-checkbox:checked');
             
-            if (selectedCheckboxes.length === 0) {
+            if (selectedEditProjectEmployees.length === 0) {
                 ratingsContainer.innerHTML = '<p class="text-muted">تکایە یەکەم کارمەندێک هەڵبژێرە</p>';
                 return;
             }
             
             // Add rating input for each selected employee
-            selectedCheckboxes.forEach(checkbox => {
-                const employeeId = checkbox.value;
+            selectedEditProjectEmployees.forEach(employeeId => {
                 const employee = employees.find(emp => emp.id === employeeId);
                 
                 if (employee) {
                     const ratingRow = document.createElement('div');
                     ratingRow.className = 'employee-rating-row';
                     ratingRow.innerHTML = `
-                        <div class="employee-rating-name">${employee.name}</div>
+                        <div class="employee-rating-name">${employee.name} (${getDepartmentDisplayName(employee.department)})</div>
                         <div class="employee-rating-slider">
-                            <input type="number" class="form-control employee-rating" min="-100" max="100" value="0" data-employee="${employeeId}">
+                           <input type="number" class="form-control employee-rating" min="-100" max="100" value="0" data-employee="${employeeId}">
                         </div>
                     `;
                     
@@ -4024,9 +4021,12 @@
             document.getElementById('projectForm').reset();
             document.getElementById('addProjectModalLabel').textContent = 'زیادکردنی پڕۆژەی نوێ';
             document.getElementById('projectId').value = '';
+
+            selectedProjectEmployees = [];
+
+            updateProjectEmployeesCheckboxes();
             
-            // Update employees checkboxes based on default department
-            ;
+
             
             const modal = new bootstrap.Modal(document.getElementById('addProjectModal'));
             modal.show();
@@ -4062,12 +4062,28 @@
             
                 
                 checkboxDiv.innerHTML = `
-                    <input type="checkbox" class="employee-checkbox" id="project-emp-${employee.id}" value="${employee.id}">
+                    <input type="checkbox" class="employee-checkbox" id="project-emp-${employee.id}" value="${employee.id}" ${isAlreadySelected ? 'checked' : ''}>
                     <label for="project-emp-${employee.id}">${employee.name} (${employee.id})</label>
                 `;
+
+                // Add event listener to update our tracking array
+                const checkbox = checkboxDiv.querySelector('.employee-checkbox');
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        // Add to selected employees if not already there
+                        if (!selectedProjectEmployees.includes(employee.id)) {
+                            selectedProjectEmployees.push(employee.id);
+                        }
+                    }else{
+                        selectedProjectEmployees = selectedProjectEmployees.filter(id => id !== employee.id);
+                    }
+                    updateProjectEmployeeRatings();
+                });
+                        
                 
                 employeesContainer.appendChild(checkboxDiv);
             });
+             updateProjectEmployeeRatings();
         }
 
         // Update edit project employees checkboxes
@@ -4100,9 +4116,24 @@
             
                 
                 checkboxDiv.innerHTML = `
-                    <input type="checkbox" class="employee-checkbox" id="edit-project-emp-${employee.id}" value="${employee.id}">
-                    <label for="edit-project-emp-${employee.id}">${employee.name} (${employee.id}) - ${departmentDisplay}</label
+                    <input type="checkbox" class="employee-checkbox" id="edit-project-emp-${employee.id}" value="${employee.id}" ${isAlreadySelected ? 'checked' : ''}>
+                    <label for="edit-project-emp-${employee.id}">${employee.name} (${employee.id})</label>
                 `;
+
+                // Add event listener to update our tracking array
+                const checkbox = checkboxDiv.querySelector('.employee-checkbox');
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        // Add to selected employees if not already there
+                        if (!selectedEditProjectEmployees.includes(employee.id)) {
+                            selectedEditProjectEmployees.push(employee.id);
+                        }
+                    } else {
+                        selectedEditProjectEmployees = selectedEditProjectEmployees.filter(id => id !== employee.id);
+                    }
+                    updateEditProjectEmployeeRatings();
+                    });
+                
                 
                 employeesContainer.appendChild(checkboxDiv);
             });
@@ -4118,7 +4149,7 @@
             
             // Get selected employees from checkboxes
             const selectedCheckboxes = document.querySelectorAll('#projectEmployeesContainer .employee-checkbox:checked');
-            const selectedEmployees = Array.from(selectedCheckboxes).map(checkbox => checkbox.value);
+            const selectedEmployees = selectedProjectEmployees;
             
             const details = document.getElementById('projectDetails').value;
             
@@ -4328,7 +4359,7 @@
             
             // Get selected employees from checkboxes
             const selectedCheckboxes = document.querySelectorAll('#editProjectEmployeesContainer .employee-checkbox:checked');
-            const selectedEmployees = Array.from(selectedCheckboxes).map(checkbox => checkbox.value);
+            const selectedEmployees = selectedEditProjectEmployees;
             
             const details = document.getElementById('editProjectDetails').value;
             
