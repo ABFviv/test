@@ -970,7 +970,8 @@
                     <button class="btn btn-success ms-2 quick-record-only" id="quickRecordBtn" style="display: none;">
                         <i class="bi bi-plus-circle"></i> زیادکردنی تۆمار
                     </button>
-                            <button class="btn btn-info ms-2" id="showDailyTotalsBtn">
+                            <!-- ADD THE DAILY TOTALS BUTTON HERE -->
+        <button class="btn btn-info ms-2" id="showDailyTotalsBtn">
             <i class="bi bi-bar-chart"></i> پیشاندانی کاری ڕۆژانەی گشتی
         </button>
                 </div>
@@ -2109,7 +2110,7 @@
                 switchRecordType('daily');
 
             // Show daily totals button
-document.getElementById('showDailyTotalsBtn').addEventListener('click', showDailyWorkTotals);
+ document.getElementById('showDailyTotalsBtn').addEventListener('click', showDailyWorkTotals);
                 
             });
             
@@ -5450,11 +5451,14 @@ const selectedDepartments = Array.from(checkboxes).map(checkbox => checkbox.valu
 
        
 // Show daily work totals section
+// Show daily work totals section
 function showDailyWorkTotals() {
+    console.log('Button clicked!'); // Debug line
+    
     const dailyWorkTotalsSection = document.getElementById('dailyWorkTotalsSection');
     const showDailyTotalsBtn = document.getElementById('showDailyTotalsBtn');
     
-    if (dailyWorkTotalsSection.style.display === 'none') {
+    if (dailyWorkTotalsSection.style.display === 'none' || dailyWorkTotalsSection.style.display === '') {
         // Show the section
         dailyWorkTotalsSection.style.display = 'block';
         showDailyTotalsBtn.innerHTML = '<i class="bi bi-eye-slash"></i> لاپەڕەی کاری ڕۆژانەی گشتی';
