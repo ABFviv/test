@@ -896,42 +896,6 @@
             </div>
         </div>
 
-        <!-- Department Filter for Daily Work Totals -->
-        <div class="period-filter" id="totalsDepartmentFilter" style="display: none;">
-            <div class="row g-3 align-items-center">
-                <div class="col-md-4">
-                    <label for="totalsDepartment" class="form-label text-center w-100">هەڵبژاردنی بەش</label>
-                    <select class="form-select text-center" id="totalsDepartment" multiple style="height: 120px;">
-                        <option value="crushing-prep">هاڕین و ئامادەکردن</option>
-                        <option value="cutting-setting">بڕین و بارکردن</option>
-                        <option value="klin">فڕن</option>
-                        <option value="unsetting">داگرتن</option>
-                        <option value="mechanical">میکانیک</option>
-                        <option value="electrical-ac">کارەبا</option>
-                    </select>
-                    <small class="form-text text-center">کلیکی بکە و CTRL بگرە بۆ هەڵبژاردنی زیاتر لە یەک بەش</small>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label text-center w-100">&nbsp;</label>
-                    <button class="btn btn-primary w-100" id="applyTotalsFilterBtn">
-                        <i class="bi bi-funnel"></i> جێبەجێکردن
-                    </button>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label text-center w-100">&nbsp;</label>
-                    <button class="btn btn-secondary w-100" id="selectAllDepartmentsBtn">
-                        <i class="bi bi-check-all"></i> هەموویان
-                    </button>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label text-center w-100">&nbsp;</label>
-                    <button class="btn btn-secondary w-100" id="clearDepartmentsBtn">
-                        <i class="bi bi-x-circle"></i> پاککردنەوە
-                    </button>
-                </div>
-            </div>
-        </div>
-
         <div class="filter-section">
             <div class="row g-3">
                 <div class="col-md-3">
@@ -1020,6 +984,42 @@
             </div>
         </div>
     </div>
+    
+    <!-- Department Filter for Daily Work Totals -->
+        <div class="period-filter" id="totalsDepartmentFilter" style="display: none;">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-4">
+                    <label for="totalsDepartment" class="form-label text-center w-100">هەڵبژاردنی بەش</label>
+                    <select class="form-select text-center" id="totalsDepartment" multiple style="height: 120px;">
+                        <option value="crushing-prep">هاڕین و ئامادەکردن</option>
+                        <option value="cutting-setting">بڕین و بارکردن</option>
+                        <option value="klin">فڕن</option>
+                        <option value="unsetting">داگرتن</option>
+                        <option value="mechanical">میکانیک</option>
+                        <option value="electrical-ac">کارەبا</option>
+                    </select>
+                    <small class="form-text text-center">کلیکی بکە و CTRL بگرە بۆ هەڵبژاردنی زیاتر لە یەک بەش</small>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label text-center w-100">&nbsp;</label>
+                    <button class="btn btn-primary w-100" id="applyTotalsFilterBtn">
+                        <i class="bi bi-funnel"></i> جێبەجێکردن
+                    </button>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label text-center w-100">&nbsp;</label>
+                    <button class="btn btn-secondary w-100" id="selectAllDepartmentsBtn">
+                        <i class="bi bi-check-all"></i> هەموویان
+                    </button>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label text-center w-100">&nbsp;</label>
+                    <button class="btn btn-secondary w-100" id="clearDepartmentsBtn">
+                        <i class="bi bi-x-circle"></i> پاککردنەوە
+                    </button>
+                </div>
+            </div>
+        </div>
     
     <!-- Daily Work Totals Section -->
     <div class="daily-work-totals" id="dailyWorkTotalsSection" style="display: none;">
