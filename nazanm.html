@@ -3178,7 +3178,67 @@ function sortElectricalMechanicalTotals(column) {
             alert(`وردەکاری کارمەند:\nژمارەی کارمەند: ${employee.id}\nناو: ${employee.name}\nپیشە: ${employee.position}\nبەش: ${employee.department}\nهەڵسەنگاندنی ڕۆژانە: ${calculateDailyRating(employee).toFixed(1)}\nهەڵسەنگاندنی کارەکانی دیکە: ${calculateOtherRating(employee).toFixed(1)}`);
         }
 
-       viewWorkRecords
+      // View work records
+function viewWorkRecords(id) {
+    const employee = employees.find(emp => emp.id === id);
+    if (!employee) return;
+    
+    currentEmployeeId = id;
+    document.getElementById('currentEmployeeName').textContent = employee.name;
+    
+    // Show work records page
+    document.getElementById('dashboardPage').style.display = 'none';
+    document.getElementById('workRecordsPage').style.display = 'block';
+    
+    // Hide daily work totals sections
+    document.getElementById('dailyWorkTotalsSection').style.display = 'none';
+    document.getElementById('electricalMechanicalTotalsSection').style.display = 'none';
+    
+    // For mechanical and electrical-ac, show daily work tab
+    document.getElementById('dailyWorkTab').style.display = 'inline-block';
+    currentRecordType = 'daily';
+    
+    // Show/hide special record button
+    document.getElementById('addSpecialRecordBtn').style.display = 
+        (employee.department === 'electrical-ac' || employee.department === 'mechanical') ? 'inline-block' : 'none';
+    
+    // Show/hide daily work totals for individual employee
+    const dailyWorkTotalsSection = document.getElementById('employeeDailyWorkTotals');
+    const electricalMechanicalTotalsSection = document.getElementById('employeeElectricalMechanicalTotals');
+    const employeeTotalsName = document.getElementById('employeeTotalsName');
+    const employeeElectricalMechanicalName = document.getElementById('employeeElectricalMechanicalName');
+    const employeeCartsContainer = document.getElementById('employeeCartsContainer');
+    const employeeClayTonsContainer = document.getElementById('employeeClayTonsContainer');
+    
+    if (['crushing-prep', 'cutting-setting', 'unsetting'].includes(employee.department)) {
+        dailyWorkTotalsSection.style.display = 'block';
+        electricalMechanicalTotalsSection.style.display = 'none';
+        employeeTotalsName.textContent = employee.name;
+        
+        // Show appropriate columns based on department
+        if (employee.department === 'crushing-prep') {
+            employeeCartsContainer.style.display = 'none';
+            employeeClayTonsContainer.style.display = 'block';
+        } else {
+            employeeCartsContainer.style.display = 'block';
+            employeeClayTonsContainer.style.display = 'none';
+        }
+        
+        updateEmployeeDailyWorkTotals(employee);
+    } else if (employee.department === 'mechanical' || employee.department === 'electrical-ac') {
+        dailyWorkTotalsSection.style.display = 'none';
+        electricalMechanicalTotalsSection.style.display = 'block';
+        employeeElectricalMechanicalName.textContent = employee.name;
+        
+        updateEmployeeElectricalMechanicalTotals(employee);
+    } else {
+        dailyWorkTotalsSection.style.display = 'none';
+        electricalMechanicalTotalsSection.style.display = 'none';
+    }
+    
+    updateRecordTabs();
+    loadWorkRecords(employee);
+}
 
         // Edit employee
         function editEmployee(id) {
@@ -5957,6 +6017,7 @@ const selectedDepartments = Array.from(checkboxes).map(checkbox => checkbox.valu
 </script>
 </body>
 </html>
+
 
 
 
