@@ -964,10 +964,10 @@
                 <button class="btn btn-light btn-sm" id="logoutBtn">
                     <i class="bi bi-box-arrow-right"></i> چوونەدەرەوە
                 </button>
-                <button class="btn btn-info btn-sm ms-2 position-relative" id="notificationsBtn" style="display: none;">
-                    <i class="bi bi-bell"></i> ئاگادارکردنەوەکان
-                    <span class="notification-badge" id="notificationCount" style="display: none;">0</span>
-                </button>
+              <button class="btn btn-info btn-sm ms-2 position-relative" id="notificationsBtn" onclick="showNotificationsPage()" style="display: none;">
+    <i class="bi bi-bell"></i> ئاگادارکردنەوەکان
+    <span class="notification-badge" id="notificationCount" style="display: none;">0</span>
+</button>
                 <button class="btn btn-warning btn-sm ms-2" id="refreshBtn">
                     <i class="bi bi-arrow-clockwise"></i> نوێکردنەوە
                 </button>
@@ -1048,8 +1048,9 @@
                     <button class="btn btn-info ms-2 admin-and-supervisor-only" id="printBtn">
                         <i class="bi bi-printer"></i> پرینت
                     </button>
-                    <button class="btn btn-primary ms-2 admin-and-supervisor-only" id="projectsBtn">
-                        <i class="bi bi-briefcase"></i> پڕۆژە
+                    <button class="btn btn-primary ms-2 admin-and-supervisor-only" id="projectsBtn" onclick="showProjectsPage()">
+    <i class="bi bi-briefcase"></i> پڕۆژە
+</button>
                     </button>
                     <button class="btn btn-success ms-2 electrical-mechanical-only" id="specialDailyWorkBtn" style="display: none;">
                         <i class="bi bi-plus-circle"></i> کاری ڕۆژانەی تایبەت
@@ -6073,6 +6074,7 @@ function loadNotifications() {
 </script>
 </body>
 </html>
+
 
 
 
