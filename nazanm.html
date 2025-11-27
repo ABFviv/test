@@ -2664,7 +2664,7 @@ function backToDashboardFromProjects() {
     updateDailyWorkTotals();
     updateElectricalMechanicalTotals();
 }
-     / Back to dashboard from notifications
+     // Back to dashboard from notifications
 function backToDashboardFromNotifications() {
     document.getElementById('notificationsPage').style.display = 'none';
     document.getElementById('dashboardPage').style.display = 'block';
@@ -3121,7 +3121,7 @@ function sortElectricalMechanicalTotals(column) {
             alert(`وردەکاری کارمەند:\nژمارەی کارمەند: ${employee.id}\nناو: ${employee.name}\nپیشە: ${employee.position}\nبەش: ${employee.department}\nهەڵسەنگاندنی ڕۆژانە: ${calculateDailyRating(employee).toFixed(1)}\nهەڵسەنگاندنی کارەکانی دیکە: ${calculateOtherRating(employee).toFixed(1)}`);
         }
 
-       iewWorkRecords
+       viewWorkRecords
 
         // Edit employee
         function editEmployee(id) {
@@ -5900,4 +5900,5 @@ const selectedDepartments = Array.from(checkboxes).map(checkbox => checkbox.valu
 </script>
 </body>
 </html>
+
 
