@@ -2656,7 +2656,7 @@ function applyPeriodFilter() {
         }
 
      // Show projects page
-function showProjectsPage() {
+         function showProjectsPage() {
     document.getElementById('loginPage').style.display = 'none';
     document.getElementById('dashboardPage').style.display = 'none';
     document.getElementById('workRecordsPage').style.display = 'none';
@@ -2672,7 +2672,7 @@ function showProjectsPage() {
 }
 
         // Toggle daily work totals visibility
-function setupTotalsToggle() {
+          function setupTotalsToggle() {
     const toggleBtn = document.getElementById('toggleTotalsBtn');
     const dailyTotalsSection = document.getElementById('dailyWorkTotalsSection');
     const electricalTotalsSection = document.getElementById('electricalMechanicalTotalsSection');
@@ -2717,7 +2717,7 @@ function setupTotalsToggle() {
     });
 }
      // Show notifications page
-function showNotificationsPage() {
+             function showNotificationsPage() {
     document.getElementById('loginPage').style.display = 'none';
     document.getElementById('dashboardPage').style.display = 'none';
     document.getElementById('workRecordsPage').style.display = 'none';
@@ -2732,7 +2732,8 @@ function showNotificationsPage() {
     loadNotifications();
 }
 
-        function backToDashboardFromProjects() {
+        // Back to dashboard from projects
+function backToDashboardFromProjects() {
     document.getElementById('projectsPage').style.display = 'none';
     document.getElementById('dashboardPage').style.display = 'block';
 
@@ -2745,7 +2746,8 @@ function showNotificationsPage() {
     updateDailyWorkTotals();
     updateElectricalMechanicalTotals();
 }
-    function backToDashboardFromNotifications() {
+// Back to dashboard from notifications
+           function backToDashboardFromNotifications() {
     document.getElementById('notificationsPage').style.display = 'none';
     document.getElementById('dashboardPage').style.display = 'block';
 
@@ -6071,6 +6073,7 @@ const selectedDepartments = Array.from(checkboxes).map(checkbox => checkbox.valu
 </script>
 </body>
 </html>
+
 
 
 
