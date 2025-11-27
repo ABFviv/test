@@ -1894,58 +1894,61 @@
 
     <!-- Quick Record Modal -->
     <div class="modal fade" id="quickRecordModal" tabindex="-1" aria-labelledby="quickRecordModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title w-100 text-center" id="quickRecordModalLabel">زیادکردنی تۆماری خێرا</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="quickRecordForm">
-                        <div class="mb-3">
-                            <label for="quickRecordDate" class="form-label text-center w-100">بەروار</label>
-                            <input type="date" class="form-control text-center" id="quickRecordDate" required>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title w-100 text-center" id="quickRecordModalLabel">زیادکردنی تۆماری خێرا</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="quickRecordForm">
+                    <div class="mb-3">
+                        <label for="quickRecordDate" class="form-label text-center w-100">بەروار</label>
+                        <input type="date" class="form-control text-center" id="quickRecordDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quickRecordEmployees" class="form-label text-center w-100">هەڵبژاردنی کارمەند</label>
+                        <div class="employee-selection-container" id="quickRecordEmployeesContainer">
+                            <!-- Employee checkboxes will be populated here -->
                         </div>
-                        <div class="mb-3">
-                            <label for="quickRecordEmployees" class="form-label text-center w-100">هەڵبژاردنی کارمەند</label>
-                            <div class="employee-selection-container" id="quickRecordEmployeesContainer">
-                                <!-- Employee checkboxes will be populated here -->
-                            </div>
-                        </div>
-                        <div class="mb-3" id="quickRecordFieldContainer">
-                            <label for="quickRecordField" class="form-label text-center w-100" id="quickRecordFieldLabel">ژمارەی عەرەبانەکان</label>
-                            <input type="number" class="form-control text-center" id="quickRecordField" min="1" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="quickRecordRating" class="form-label text-center w-100">هەڵسەنگاندن (-100 بۆ 100)</label>
-                            <div class="rating-control">
-                                <div class="rating-slider-container">
-                                    <div class="rating-arrows">
-                                        <button type="button" class="rating-arrow-btn" onclick="adjustRating('quickRecordRating', 1)">
-                                            <i class="bi bi-arrow-up"></i>
-                                        </button>
-                                        <button type="button" class="rating-arrow-btn" onclick="adjustRating('quickRecordRating', -1)">
-                                            <i class="bi bi-arrow-down"></i>
-                                        </button>
-                                    </div>
-                                    <input type="range" class="form-range" id="quickRecordRating" min="-100" max="100" value="0" required>
-                                    <span id="quickRecordRatingValue" class="employee-rating-value text-center">0</span>
+                    </div>
+                    <div class="mb-3" id="quickRecordFieldContainer">
+                        <label for="quickRecordField" class="form-label text-center w-100" id="quickRecordFieldLabel">ژمارەی عەرەبانەکان</label>
+                        <input type="number" class="form-control text-center" id="quickRecordField" min="1" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quickRecordRating" class="form-label text-center w-100">
+                            هەڵسەنگاندن (-100 بۆ 100) 
+                            <small class="text-muted" id="autoRatingNote" style="display: none;">(خۆکار)</small>
+                        </label>
+                        <div class="rating-control">
+                            <div class="rating-slider-container">
+                                <div class="rating-arrows">
+                                    <button type="button" class="rating-arrow-btn" onclick="adjustRating('quickRecordRating', 1)">
+                                        <i class="bi bi-arrow-up"></i>
+                                    </button>
+                                    <button type="button" class="rating-arrow-btn" onclick="adjustRating('quickRecordRating', -1)">
+                                        <i class="bi bi-arrow-down"></i>
+                                    </button>
                                 </div>
+                                <input type="range" class="form-range" id="quickRecordRating" min="-100" max="100" value="0" required>
+                                <span id="quickRecordRatingValue" class="employee-rating-value text-center">0</span>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="quickRecordNote" class="form-label text-center w-100">تێبینی</label>
-                            <textarea class="form-control text-center" id="quickRecordNote" rows="3"></textarea>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer justify-content-center">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">پاشتگەستبوونەوە</button>
-                    <button type="button" class="btn btn-primary" id="saveQuickRecordBtn">تۆمارکردن</button>
-                </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quickRecordNote" class="form-label text-center w-100">تێبینی</label>
+                        <textarea class="form-control text-center" id="quickRecordNote" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">پاشتگەستبوونەوە</button>
+                <button type="button" class="btn btn-primary" id="saveQuickRecordBtn">تۆمارکردن</button>
             </div>
         </div>
     </div>
+</div>
 
     <!-- Toast Notification -->
     <div class="toast-container">
@@ -2383,6 +2386,9 @@
             document.getElementById('otherWorkTab').addEventListener('click', function() {
                 switchRecordType('other');
             });
+            document.getElementById('quickRecordField').addEventListener('input', function() {
+    autoCalculateQuickRecordRating();
+});
             
             // Add work record buttons
             document.getElementById('addRecordBtn').addEventListener('click', function() {
@@ -4345,55 +4351,66 @@ async function saveEditedWorkRecord() {
     }
 
     // Save quick record
-    async function saveQuickRecord() {
-        const date = document.getElementById('quickRecordDate').value;
-        const fieldValue = document.getElementById('quickRecordField').value;
-        const rate = document.getElementById('quickRecordRating').value;
-        const note = document.getElementById('quickRecordNote').value;
-        
-        // Get selected employees from checkboxes
-        const selectedCheckboxes = document.querySelectorAll('#quickRecordEmployeesContainer .employee-checkbox:checked');
-        const selectedEmployees = Array.from(selectedCheckboxes).map(checkbox => checkbox.value);
-        
-        if (selectedEmployees.length === 0) {
-            showNotification('تکایە کەمێک کارمەند هەڵبژێرە', 'danger');
-            return;
-        }
-        
-        // Add record to each selected employee
-        for (const employeeId of selectedEmployees) {
-            const employee = employees.find(emp => emp.id === employeeId);
-            if (!employee) continue;
-            
-            if (!employee.dailyWork) {
-                employee.dailyWork = [];
-            }
-            
-            const workRecord = {
-                date,
-                rate,
-                note,
-                createdAt: new Date().toISOString()
-            };
-            
-            // Add field based on department
-            if (currentUser.department === 'crushing-prep') {
-                workRecord.clayTons = fieldValue;
-            } else {
-                workRecord.carts = fieldValue;
-            }
-            
-            employee.dailyWork.push(workRecord);
-            await saveEmployeeToFirebase(employee);
-        }
-        
-        showNotification(`تۆماری کار بۆ ${selectedEmployees.length} کارمەند بەسەرکەوتووی تۆمارکرا`, 'success');
-        const modal = bootstrap.Modal.getInstance(document.getElementById('quickRecordModal'));
-        modal.hide();
-        
-        // Update daily work totals
-        updateDailyWorkTotals();
+async function saveQuickRecord() {
+    const date = document.getElementById('quickRecordDate').value;
+    const fieldValue = document.getElementById('quickRecordField').value;
+    const rate = document.getElementById('quickRecordRating').value;
+    const note = document.getElementById('quickRecordNote').value;
+    
+    // Get selected employees from checkboxes
+    const selectedCheckboxes = document.querySelectorAll('#quickRecordEmployeesContainer .employee-checkbox:checked');
+    const selectedEmployees = Array.from(selectedCheckboxes).map(checkbox => checkbox.value);
+    
+    if (selectedEmployees.length === 0) {
+        showNotification('تکایە کەمێک کارمەند هەڵبژێرە', 'danger');
+        return;
     }
+    
+    // Add record to each selected employee
+    for (const employeeId of selectedEmployees) {
+        const employee = employees.find(emp => emp.id === employeeId);
+        if (!employee) continue;
+        
+        if (!employee.dailyWork) {
+            employee.dailyWork = [];
+        }
+        
+        // Calculate automatic rating based on department equation
+        let finalRating = rate;
+        const inputValue = parseInt(fieldValue);
+        
+        if (!isNaN(inputValue)) {
+            const automaticRating = getAutomaticRating(employee.id, employee.department, inputValue);
+            if (automaticRating !== null) {
+                finalRating = automaticRating;
+            }
+        }
+        
+        const workRecord = {
+            date,
+            rate: finalRating,
+            note,
+            createdAt: new Date().toISOString()
+        };
+        
+        // Add field based on department
+        if (currentUser.department === 'crushing-prep') {
+            workRecord.clayTons = fieldValue;
+        } else {
+            workRecord.carts = fieldValue;
+        }
+        
+        employee.dailyWork.push(workRecord);
+        await saveEmployeeToFirebase(employee);
+    }
+    
+    showNotification(`تۆماری کار بۆ ${selectedEmployees.length} کارمەند بەسەرکەوتووی تۆمارکرا`, 'success');
+    const modal = bootstrap.Modal.getInstance(document.getElementById('quickRecordModal'));
+    modal.hide();
+    
+    // Update daily work totals
+    updateDailyWorkTotals();
+}
 
 // Update daily work totals for all employees
 function updateDailyWorkTotals() {
@@ -6183,9 +6200,56 @@ async function deleteNotification(notificationId) {
         const bsToast = new bootstrap.Toast(toast);
         bsToast.show();
     }
+        function autoCalculateQuickRecordRating() {
+    const fieldInput = document.getElementById('quickRecordField');
+    const ratingInput = document.getElementById('quickRecordRating');
+    const ratingValue = document.getElementById('quickRecordRatingValue');
+    const autoRatingNote = document.getElementById('autoRatingNote');
+    
+    if (!fieldInput || !ratingInput || !fieldInput.value) {
+        autoRatingNote.style.display = 'none';
+        return;
+    }
+    
+    const inputValue = parseInt(fieldInput.value);
+    if (isNaN(inputValue)) {
+        autoRatingNote.style.display = 'none';
+        return;
+    }
+    
+    // Get selected employees
+    const selectedCheckboxes = document.querySelectorAll('#quickRecordEmployeesContainer .employee-checkbox:checked');
+    const selectedEmployees = Array.from(selectedCheckboxes).map(checkbox => checkbox.value);
+    
+    if (selectedEmployees.length === 0) {
+        autoRatingNote.style.display = 'none';
+        return;
+    }
+    
+    // For quick record, we'll use the first selected employee's department for calculation
+    const firstEmployeeId = selectedEmployees[0];
+    const employee = employees.find(emp => emp.id === firstEmployeeId);
+    
+    if (!employee) {
+        autoRatingNote.style.display = 'none';
+        return;
+    }
+    
+    // Get automatic rating if applicable
+    const automaticRating = getAutomaticRating(employee.id, employee.department, inputValue);
+    
+    if (automaticRating !== null) {
+        ratingInput.value = automaticRating;
+        ratingValue.textContent = automaticRating;
+        autoRatingNote.style.display = 'inline';
+    } else {
+        autoRatingNote.style.display = 'none';
+    }
+}
 </script>
 </body>
 </html>
+
 
 
 
