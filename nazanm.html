@@ -2506,38 +2506,48 @@ function applyTotalsDepartmentFilter() {
             }
         }
 
-        // Apply period filter
-        function applyPeriodFilter() {
-            const periodType = document.getElementById('periodType').value;
-            
-            if (periodType === 'all') {
-                periodFilter.type = 'all';
-                periodFilter.startDate = null;
-                periodFilter.endDate = null;
-            } else {
-                const startDate = document.getElementById('startPeriod').value;
-                const endDate = document.getElementById('endPeriod').value;
-                
-                if (!startDate || !endDate) {
-                    showNotification('تکایە هەردوو بەرواری دەستپێک و کۆتایی دیاری بکە', 'danger');
-                    return;
-                }
-                
-                if (startDate > endDate) {
-                    showNotification('بەرواری دەستپێک دەبێت لە کۆتایی بچووکتر بێت', 'danger');
-                    return;
-                }
-                
-                periodFilter.type = 'custom';
-                periodFilter.startDate = startDate;
-                periodFilter.endDate = endDate;
-            }
-            
-            renderEmployeeTable();
-            updateDailyWorkTotals();
-            updateElectricalMechanicalTotals();
-            showNotification('فیلتەری کات جێبەجێ کرا', 'success');
+       // Apply period filter
+function applyPeriodFilter() {
+    const periodType = document.getElementById('periodType').value;
+    
+    if (periodType === 'all') {
+        periodFilter.type = 'all';
+        periodFilter.startDate = null;
+        periodFilter.endDate = null;
+    } else {
+        const startDate = document.getElementById('startPeriod').value;
+        const endDate = document.getElementById('endPeriod').value;
+        
+        if (!startDate || !endDate) {
+            showNotification('تکایە هەردوو بەرواری دەستپێک و کۆتایی دیاری بکە', 'danger');
+            return;
         }
+        
+        if (startDate > endDate) {
+            showNotification('بەرواری دەستپێک دەبێت لە کۆتایی بچووکتر بێت', 'danger');
+            return;
+        }
+        
+        periodFilter.type = 'custom';
+        periodFilter.startDate = startDate;
+        periodFilter.endDate = endDate;
+    }
+    
+    // Hide daily work totals when applying period filter
+    document.getElementById('dailyWorkTotalsSection').style.display = 'none';
+    document.getElementById('electricalMechanicalTotalsSection').style.display = 'none';
+    
+    // Reset the toggle button state
+    const toggleBtn = document.getElementById('toggleTotalsBtn');
+    toggleBtn.innerHTML = '<i class="bi bi-eye"></i> نیشاندانی کۆی گشتی';
+    toggleBtn.classList.remove('btn-primary');
+    toggleBtn.classList.add('btn-outline-primary');
+    
+    renderEmployeeTable();
+    updateDailyWorkTotals();
+    updateElectricalMechanicalTotals();
+    showNotification('فیلتەری کات جێبەجێ کرا', 'success');
+}
 
         // Handle login
         function handleLogin(e) {
@@ -3110,54 +3120,74 @@ function sortElectricalMechanicalTotals(column) {
         }
 
         // Apply filters
-        function applyFilters() {
-            const searchName = document.getElementById('searchName').value.toLowerCase();
-            const searchId = document.getElementById('searchId').value.toLowerCase();
-            const filterDepartment = document.getElementById('filterDepartment').value;
-            const filterPosition = document.getElementById('filterPosition').value;
-            
-            let filteredEmployees = employees;
-            
-            // Filter by name
-            if (searchName) {
-                filteredEmployees = filteredEmployees.filter(emp => 
-                    emp.name.toLowerCase().includes(searchName)
-                );
-            }
-            
-            // Filter by ID
-            if (searchId) {
-                filteredEmployees = filteredEmployees.filter(emp => 
-                    emp.id.toLowerCase().includes(searchId)
-                );
-            }
-            
-            // Filter by department
-            if (filterDepartment) {
-                filteredEmployees = filteredEmployees.filter(emp => 
-                    emp.department === filterDepartment
-                );
-            }
-            
-            // Filter by position
-            if (filterPosition) {
-                filteredEmployees = filteredEmployees.filter(emp => 
-                    emp.position === filterPosition
-                );
-            }
-            
-            renderEmployeeTable(filteredEmployees);
-        }
+function applyFilters() {
+    const searchName = document.getElementById('searchName').value.toLowerCase();
+    const searchId = document.getElementById('searchId').value.toLowerCase();
+    const filterDepartment = document.getElementById('filterDepartment').value;
+    const filterPosition = document.getElementById('filterPosition').value;
+    
+    let filteredEmployees = employees;
+    
+    // Filter by name
+    if (searchName) {
+        filteredEmployees = filteredEmployees.filter(emp => 
+            emp.name.toLowerCase().includes(searchName)
+        );
+    }
+    
+    // Filter by ID
+    if (searchId) {
+        filteredEmployees = filteredEmployees.filter(emp => 
+            emp.id.toLowerCase().includes(searchId)
+        );
+    }
+    
+    // Filter by department
+    if (filterDepartment) {
+        filteredEmployees = filteredEmployees.filter(emp => 
+            emp.department === filterDepartment
+        );
+    }
+    
+    // Filter by position
+    if (filterPosition) {
+        filteredEmployees = filteredEmployees.filter(emp => 
+            emp.position === filterPosition
+        );
+    }
+    
+    // Hide daily work totals when filtering
+    document.getElementById('dailyWorkTotalsSection').style.display = 'none';
+    document.getElementById('electricalMechanicalTotalsSection').style.display = 'none';
+    
+    // Reset the toggle button state
+    const toggleBtn = document.getElementById('toggleTotalsBtn');
+    toggleBtn.innerHTML = '<i class="bi bi-eye"></i> نیشاندانی کۆی گشتی';
+    toggleBtn.classList.remove('btn-primary');
+    toggleBtn.classList.add('btn-outline-primary');
+    
+    renderEmployeeTable(filteredEmployees);
+}
 
         // Reset filters
-        function resetFilters() {
-            document.getElementById('searchName').value = '';
-            document.getElementById('searchId').value = '';
-            document.getElementById('filterDepartment').value = '';
-            document.getElementById('filterPosition').value = '';
-            
-            renderEmployeeTable();
-        }
+function resetFilters() {
+    document.getElementById('searchName').value = '';
+    document.getElementById('searchId').value = '';
+    document.getElementById('filterDepartment').value = '';
+    document.getElementById('filterPosition').value = '';
+    
+    // Hide daily work totals when resetting filters
+    document.getElementById('dailyWorkTotalsSection').style.display = 'none';
+    document.getElementById('electricalMechanicalTotalsSection').style.display = 'none';
+    
+    // Reset the toggle button state
+    const toggleBtn = document.getElementById('toggleTotalsBtn');
+    toggleBtn.innerHTML = '<i class="bi bi-eye"></i> نیشاندانی کۆی گشتی';
+    toggleBtn.classList.remove('btn-primary');
+    toggleBtn.classList.add('btn-outline-primary');
+    
+    renderEmployeeTable();
+}
 
         // Open add employee modal
         function openAddEmployeeModal() {
@@ -6017,6 +6047,7 @@ const selectedDepartments = Array.from(checkboxes).map(checkbox => checkbox.valu
 </script>
 </body>
 </html>
+
 
 
 
