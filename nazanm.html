@@ -5158,85 +5158,85 @@ const selectedDepartments = Array.from(checkboxes).map(checkbox => checkbox.valu
         }
     }
 
-    // Load projects
-    function loadProjects() {
-        const projectsContainer = document.getElementById('projectsContainer');
-        projectsContainer.innerHTML = '';
-        
-        let projectsToShow = projects;
-        
-        // If not admin, filter projects to show only those with employees from the supervisor's department
-        if (currentUser.role !== 'admin') {
-            projectsToShow = projects.filter(project => {
-                // Check if any employee in the project is from the supervisor's department
-                return project.employeeIds.some(employeeId => {
-                    const employee = employees.find(emp => emp.id === employeeId);
-                    return employee && employee.department === currentUser.department;
-                });
-            });
-        }
-        
-        if (projectsToShow.length === 0) {
-            projectsContainer.innerHTML = '<p class="text-muted">هیچ پڕۆژەیەک نییە</p>';
-            return;
-        }
-        
-        projectsToShow.forEach(project => {
-            const projectDiv = document.createElement('div');
-            projectDiv.className = 'project-card';
-            
-            // Calculate average rating for the project
-            const ratings = Object.values(project.employeeRatings || {});
-            const averageRating = ratings.length > 0 ? 
-                ratings.reduce((sum, rating) => sum + parseInt(rating), 0) / ratings.length : 0;
-            
-            const ratingClass = getWorkRecordClass(parseInt(averageRating));
-            
-            // Get employee names and ratings
-            const employeeDetails = project.employeeIds.map(id => {
-                const employee = employees.find(emp => emp.id === id);
-                const rating = project.employeeRatings ? project.employeeRatings[id] || 0 : 0;
-                return employee ? `${employee.name} (${rating})` : 'کارمەندی نەناسراو';
-            });
-            
-            projectDiv.innerHTML = `
-                <div class="project-header">
-                    <div class="project-title">${project.name}</div>
-                    <div class="project-date">${formatDate(project.createdAt)}</div>
-                </div>
-                <div class="project-rating ${ratingClass}">هەڵسەنگاندنی ناوەند: ${averageRating.toFixed(1)}</div>
-                <div class="project-details"><strong>وردەکاری:</strong> ${project.details || 'وردەکاری نییە'}</div>
-                <div class="project-employees"><strong>کارمەندان:</strong> ${employeeDetails.join(', ')}</div>
-                ${currentUser.role === 'admin' ? `
-                <div class="mt-2">
-                    <button class="btn btn-sm btn-warning edit-project-btn" data-id="${project.id}">
-                        <i class="bi bi-pencil"></i> چاککردن
-                    </button>
-                    <button class="btn btn-sm btn-danger delete-project-btn ms-1" data-id="${project.id}">
-                        <i class="bi bi-trash"></i> سڕینەوە
-                    </button>
-                </div>
-                ` : ''}
-            `;
-            
-            projectsContainer.appendChild(projectDiv);
-        });
-        
-        // Add event listeners to project buttons
-        document.querySelectorAll('.edit-project-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const projectId = this.dataset.id;
-                editProject(projectId);
-            });
-        });
-        
-        document.querySelectorAll('.delete-project-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const projectId = this.dataset.id;
-                deleteProject(projectId);
+// Load projects
+function loadProjects() {
+    const projectsContainer = document.getElementById('projectsContainer');
+    projectsContainer.innerHTML = '';
+    
+    let projectsToShow = projects;
+    
+    // If not admin, filter projects to show only those with employees from the supervisor's department
+    if (currentUser.role !== 'admin') {
+        projectsToShow = projects.filter(project => {
+            // Check if any employee in the project is from the supervisor's department
+            return project.employeeIds.some(employeeId => {
+                const employee = employees.find(emp => emp.id === employeeId);
+                return employee && employee.department === currentUser.department;
             });
         });
     }
+    
+    if (projectsToShow.length === 0) {
+        projectsContainer.innerHTML = '<p class="text-muted">هیچ پڕۆژەیەک نییە</p>';
+        return;
+    }
+    
+    projectsToShow.forEach(project => {
+        const projectDiv = document.createElement('div');
+        projectDiv.className = 'project-card';
+        
+        // Calculate average rating for the project
+        const ratings = Object.values(project.employeeRatings || {});
+        const averageRating = ratings.length > 0 ? 
+            ratings.reduce((sum, rating) => sum + parseInt(rating), 0) / ratings.length : 0;
+        
+        const ratingClass = getWorkRecordClass(parseInt(averageRating));
+        
+        // Get employee names and ratings
+        const employeeDetails = project.employeeIds.map(id => {
+            const employee = employees.find(emp => emp.id === id);
+            const rating = project.employeeRatings ? project.employeeRatings[id] || 0 : 0;
+            return employee ? `${employee.name} (${rating})` : 'کارمەندی نەناسراو';
+        });
+        
+        projectDiv.innerHTML = `
+            <div class="project-header">
+                <div class="project-title">${project.name}</div>
+                <div class="project-date">${formatDate(project.createdAt)}</div>
+            </div>
+            <div class="project-rating ${ratingClass}">هەڵسەنگاندنی ناوەند: ${averageRating.toFixed(1)}</div>
+            <div class="project-details"><strong>وردەکاری:</strong> ${project.details || 'وردەکاری نییە'}</div>
+            <div class="project-employees"><strong>کارمەندان:</strong> ${employeeDetails.join(', ')}</div>
+            ${currentUser.role === 'admin' ? `
+            <div class="mt-2">
+                <button class="btn btn-sm btn-warning edit-project-btn" data-id="${project.id}">
+                    <i class="bi bi-pencil"></i> چاککردن
+                </button>
+                <button class="btn btn-sm btn-danger delete-project-btn ms-1" data-id="${project.id}">
+                    <i class="bi bi-trash"></i> سڕینەوە
+                </button>
+            </div>
+            ` : ''}
+        `;
+        
+        projectsContainer.appendChild(projectDiv);
+    });
+    
+    // Add event listeners to project buttons
+    document.querySelectorAll('.edit-project-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const projectId = this.dataset.id;
+            editProject(projectId);
+        });
+    });
+    
+    document.querySelectorAll('.delete-project-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const projectId = this.dataset.id;
+            deleteProject(projectId);
+        });
+    });
+}
 
     // Edit project
     function editProject(projectId) {
@@ -5427,71 +5427,71 @@ const selectedDepartments = Array.from(checkboxes).map(checkbox => checkbox.valu
     }
 
     // Load notifications
-    function loadNotifications() {
-        const notificationsContainer = document.getElementById('notificationsContainer');
-        const departmentTabs = document.getElementById('departmentTabs');
+function loadNotifications() {
+    const notificationsContainer = document.getElementById('notificationsContainer');
+    const departmentTabs = document.getElementById('departmentTabs');
+    
+    notificationsContainer.innerHTML = '';
+    departmentTabs.innerHTML = '';
+    
+    let notificationsToShow = notifications;
+    
+    // For supervisor, show department tabs for electrical and mechanical
+    if (currentUser.role === 'supervisor' && (currentUser.department === 'electrical-ac' || currentUser.department === 'mechanical')) {
+        departmentTabs.style.display = 'block';
         
-        notificationsContainer.innerHTML = '';
-        departmentTabs.innerHTML = '';
+        // Add tabs for electrical and mechanical departments
+        const electricalTab = document.createElement('div');
+        electricalTab.className = 'department-tab active';
+        electricalTab.textContent = 'کارەبا';
+        electricalTab.dataset.department = 'electrical-ac';
+        departmentTabs.appendChild(electricalTab);
         
-        let notificationsToShow = notifications;
+        const mechanicalTab = document.createElement('div');
+        mechanicalTab.className = 'department-tab';
+        mechanicalTab.textContent = 'میکانیک';
+        mechanicalTab.dataset.department = 'mechanical';
+        departmentTabs.appendChild(mechanicalTab);
         
-        // For supervisor, show department tabs for electrical and mechanical
-        if (currentUser.role === 'supervisor' && (currentUser.department === 'electrical-ac' || currentUser.department === 'mechanical')) {
-            departmentTabs.style.display = 'block';
-            
-            // Add tabs for electrical and mechanical departments
-            const electricalTab = document.createElement('div');
-            electricalTab.className = 'department-tab active';
-            electricalTab.textContent = 'کارەبا';
-            electricalTab.dataset.department = 'electrical-ac';
-            departmentTabs.appendChild(electricalTab);
-            
-            const mechanicalTab = document.createElement('div');
-            mechanicalTab.className = 'department-tab';
-            mechanicalTab.textContent = 'میکانیک';
-            mechanicalTab.dataset.department = 'mechanical';
-            departmentTabs.appendChild(mechanicalTab);
-            
-            // Add event listeners to department tabs
-            document.querySelectorAll('.department-tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    // Remove active class from all tabs
-                    document.querySelectorAll('.department-tab').forEach(t => {
-                        t.classList.remove('active');
-                    });
-                    
-                    // Add active class to clicked tab
-                    this.classList.add('active');
-                    
-                    // Filter notifications by department
-                    const department = this.dataset.department;
-                    notificationsToShow = notifications.filter(n => n.targetDepartment === department);
-                    
-                    // Render filtered notifications
-                    renderNotifications(notificationsToShow);
+        // Add event listeners to department tabs
+        document.querySelectorAll('.department-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs
+                document.querySelectorAll('.department-tab').forEach(t => {
+                    t.classList.remove('active');
                 });
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // Filter notifications by department
+                const department = this.dataset.department;
+                notificationsToShow = notifications.filter(n => n.targetDepartment === department);
+                
+                // Render filtered notifications
+                renderNotifications(notificationsToShow);
             });
-            
-            // Show electrical notifications by default
-            notificationsToShow = notifications.filter(n => n.targetDepartment === 'electrical-ac');
-        } else if (currentUser.role === 'supervisor') {
-            // Other supervisors see notifications for their department only
-            notificationsToShow = notifications.filter(n => 
-                n.targetDepartment === currentUser.department
-            );
-            departmentTabs.style.display = 'none';
-        } else if (currentUser.role === 'admin') {
-            // Admin sees all notifications
-            departmentTabs.style.display = 'none';
-        }
+        });
         
-        // Update total notification count
-        document.getElementById('totalNotificationCount').textContent = notificationsToShow.length;
-        
-        // Render notifications
-        renderNotifications(notificationsToShow);
+        // Show electrical notifications by default
+        notificationsToShow = notifications.filter(n => n.targetDepartment === 'electrical-ac');
+    } else if (currentUser.role === 'supervisor') {
+        // Other supervisors see notifications for their department only
+        notificationsToShow = notifications.filter(n => 
+            n.targetDepartment === currentUser.department
+        );
+        departmentTabs.style.display = 'none';
+    } else if (currentUser.role === 'admin') {
+        // Admin sees all notifications
+        departmentTabs.style.display = 'none';
     }
+    
+    // Update total notification count
+    document.getElementById('totalNotificationCount').textContent = notificationsToShow.length;
+    
+    // Render notifications
+    renderNotifications(notificationsToShow);
+}
 
     // Get employee name by ID
     function getEmployeeName(employeeId) {
@@ -6073,6 +6073,7 @@ const selectedDepartments = Array.from(checkboxes).map(checkbox => checkbox.valu
 </script>
 </body>
 </html>
+
 
 
 
