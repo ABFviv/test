@@ -4327,175 +4327,178 @@ function backToDashboard() {
         updateDailyWorkTotals();
     }
 
-    // Update daily work totals for all employees
-    function updateDailyWorkTotals() {
-        const dailyWorkTotalsSection = document.getElementById('dailyWorkTotalsSection');
-        const dailyWorkTotalsBody = document.getElementById('dailyWorkTotalsBody');
-        const cartsColumnHeader = document.getElementById('cartsColumnHeader');
-        const clayTonsColumnHeader = document.getElementById('clayTonsColumnHeader');
+// Update daily work totals for all employees
+function updateDailyWorkTotals() {
+    const dailyWorkTotalsSection = document.getElementById('dailyWorkTotalsSection');
+    const dailyWorkTotalsBody = document.getElementById('dailyWorkTotalsBody');
+    const cartsColumnHeader = document.getElementById('cartsColumnHeader');
+    const clayTonsColumnHeader = document.getElementById('clayTonsColumnHeader');
+    
+    // Show the section only for specific departments and admin (EXCLUDE electrical and mechanical)
+    const showTotals = ['crushing-prep', 'cutting-setting', 'unsetting', 'klin'].includes(currentUser.department) || currentUser.role === 'admin';
+    
+    if (showTotals) {
+        dailyWorkTotalsSection.style.display = 'block';
         
-        // Show the section only for specific departments and admin
-        const showTotals = ['crushing-prep', 'cutting-setting', 'unsetting'].includes(currentUser.department) || currentUser.role === 'admin';
+        // Get selected departments from checkboxes
+        const checkboxes = document.querySelectorAll('.department-checkbox:checked');
+        const selectedDepartments = Array.from(checkboxes).map(checkbox => checkbox.value);
+                
+        // Show appropriate columns based on department
+        if (currentUser.role === 'admin') {
+            // Admin sees both columns
+            cartsColumnHeader.style.display = 'table-cell';
+            clayTonsColumnHeader.style.display = 'table-cell';
+        } else if (currentUser.department === 'crushing-prep') {
+            cartsColumnHeader.style.display = 'none';
+            clayTonsColumnHeader.style.display = 'table-cell';
+        } else {
+            cartsColumnHeader.style.display = 'table-cell';
+            clayTonsColumnHeader.style.display = 'none';
+        }
         
-        if (showTotals) {
-            dailyWorkTotalsSection.style.display = 'block';
-            
-           // Get selected departments from checkboxes
-const checkboxes = document.querySelectorAll('.department-checkbox:checked');
-const selectedDepartments = Array.from(checkboxes).map(checkbox => checkbox.value);
-                
-                // Show appropriate columns based on department
-                if (currentUser.role === 'admin') {
-                    // Admin sees both columns
-                    cartsColumnHeader.style.display = 'table-cell';
-                    clayTonsColumnHeader.style.display = 'table-cell';
-                } else if (currentUser.department === 'crushing-prep') {
-                    cartsColumnHeader.style.display = 'none';
-                    clayTonsColumnHeader.style.display = 'table-cell';
-                } else {
-                    cartsColumnHeader.style.display = 'table-cell';
-                    clayTonsColumnHeader.style.display = 'none';
-                }
-                
-                // Clear existing rows
-                dailyWorkTotalsBody.innerHTML = '';
-                
-                // Filter employees based on user role AND selected departments
-                let employeesToShow = employees;
-                if (currentUser.role !== 'admin') {
-                    employeesToShow = employees.filter(emp => emp.department === currentUser.department);
-                } else {
-                    // For admin, apply department filter if any departments are selected
-                    if (selectedDepartments.length > 0) {
-                        employeesToShow = employees.filter(emp => selectedDepartments.includes(emp.department));
-                    }
-                    // If no departments selected, show all employees (default behavior)
-                }
-                
-                if (employeesToShow.length === 0) {
-                    dailyWorkTotalsBody.innerHTML = '<tr><td colspan="6" class="text-center">هیچ کارمەندێک نییە</td></tr>';
-                    return;
-                }
-                
-                // Calculate totals for each employee
-                const employeeTotals = employeesToShow.map(employee => {
-                    let cartsTotal = 0;
-                    let clayTonsTotal = 0;
-                    let workCount = 0;
-                    
-                    if (employee.dailyWork && employee.dailyWork.length > 0) {
-                        // Filter daily work by period if needed
-                        let filteredDailyWork = employee.dailyWork;
-                        if (periodFilter.type === 'custom' && filteredDailyWork.length > 0) {
-                            filteredDailyWork = filteredDailyWork.filter(work => {
-                                const workDate = work.date;
-                                return workDate >= periodFilter.startDate && workDate <= periodFilter.endDate;
-                            });
-                        }
-                        
-                        filteredDailyWork.forEach(work => {
-                            if (work.carts) {
-                                cartsTotal += parseInt(work.carts);
-                            }
-                            if (work.clayTons) {
-                                clayTonsTotal += parseInt(work.clayTons);
-                            }
-                            workCount++;
-                        });
-                    }
-                    
-                    return {
-                        id: employee.id,
-                        name: employee.name,
-                        department: employee.department,
-                        carts: cartsTotal,
-                        clayTons: clayTonsTotal,
-                        workCount: workCount
-                    };
-                });
-                
-                // Sort the employee totals
-                const sortedTotals = employeeTotals.sort((a, b) => {
-                    let valueA, valueB;
-                    
-                    switch (dailyWorkTotalsSortColumn) {
-                        case 'name':
-                            valueA = a.name.toLowerCase();
-                            valueB = b.name.toLowerCase();
-                            break;
-                        case 'id':
-                            valueA = a.id.toLowerCase();
-                            valueB = b.id.toLowerCase();
-                            break;
-                        case 'department':
-                            valueA = a.department.toLowerCase();
-                            valueB = b.department.toLowerCase();
-                            break;
-                        case 'carts':
-                            valueA = a.carts;
-                            valueB = b.carts;
-                            break;
-                        case 'clayTons':
-                            valueA = a.clayTons;
-                            valueB = b.clayTons;
-                            break;
-                        case 'workCount':
-                            valueA = a.workCount;
-                            valueB = b.workCount;
-                            break;
-                        default:
-                            return 0;
-                    }
-                    
-                    if (typeof valueA === 'string') {
-                        return dailyWorkTotalsSortDirection === 'asc' 
-                            ? valueA.localeCompare(valueB)
-                            : valueB.localeCompare(valueA);
-                    } else {
-                        return dailyWorkTotalsSortDirection === 'asc' 
-                            ? valueA - valueB
-                            : valueB - valueA;
-                    }
-                });
-                
-                // Add rows to the table
-                sortedTotals.forEach(employee => {
-                    const row = document.createElement('tr');
-                    
-                    if (currentUser.role === 'admin') {
-                        // Admin sees both columns
-                        row.innerHTML = `
-                            <td>${employee.name}</td>
-                            <td>${employee.id}</td>
-                            <td>${getDepartmentDisplayName(employee.department)}</td>
-                            <td><span>${employee.carts}</span></td>
-                            <td><span>${employee.clayTons}</span></td>
-                            <td><span>${employee.workCount}</span></td>
-                        `;
-                    } else if (currentUser.department === 'crushing-prep') {
-                        row.innerHTML = `
-                            <td>${employee.name}</td>
-                            <td>${employee.id}</td>
-                            <td>${getDepartmentDisplayName(employee.department)}</td>
-                            <td><span>${employee.clayTons}</span></td>
-                            <td><span>${employee.workCount}</span></td>
-                        `;
-                    } else {
-                        row.innerHTML = `
-                            <td>${employee.name}</td>
-                            <td>${employee.id}</td>
-                            <td>${getDepartmentDisplayName(employee.department)}</td>
-                            <td><span>${employee.carts}</span></td>
-                            <td><span>${employee.workCount}</span></td>
-                        `;
-                    }
-                    
-                    dailyWorkTotalsBody.appendChild(row);
-                });
-            } else {
-                dailyWorkTotalsSection.style.display = 'none';
+        // Clear existing rows
+        dailyWorkTotalsBody.innerHTML = '';
+        
+        // Filter employees based on user role AND selected departments
+        // EXCLUDE electrical and mechanical employees from this section
+        let employeesToShow = employees.filter(emp => 
+            emp.department !== 'electrical-ac' && emp.department !== 'mechanical'
+        );
+        
+        if (currentUser.role !== 'admin') {
+            employeesToShow = employeesToShow.filter(emp => emp.department === currentUser.department);
+        } else {
+            // For admin, apply department filter if any departments are selected
+            if (selectedDepartments.length > 0) {
+                employeesToShow = employeesToShow.filter(emp => selectedDepartments.includes(emp.department));
             }
         }
+        
+        if (employeesToShow.length === 0) {
+            dailyWorkTotalsBody.innerHTML = '<tr><td colspan="6" class="text-center">هیچ کارمەندێک نییە</td></tr>';
+            return;
+        }
+        
+        // Calculate totals for each employee
+        const employeeTotals = employeesToShow.map(employee => {
+            let cartsTotal = 0;
+            let clayTonsTotal = 0;
+            let workCount = 0;
+            
+            if (employee.dailyWork && employee.dailyWork.length > 0) {
+                // Filter daily work by period if needed
+                let filteredDailyWork = employee.dailyWork;
+                if (periodFilter.type === 'custom' && filteredDailyWork.length > 0) {
+                    filteredDailyWork = filteredDailyWork.filter(work => {
+                        const workDate = work.date;
+                        return workDate >= periodFilter.startDate && workDate <= periodFilter.endDate;
+                    });
+                }
+                
+                filteredDailyWork.forEach(work => {
+                    if (work.carts) {
+                        cartsTotal += parseInt(work.carts);
+                    }
+                    if (work.clayTons) {
+                        clayTonsTotal += parseInt(work.clayTons);
+                    }
+                    workCount++;
+                });
+            }
+            
+            return {
+                id: employee.id,
+                name: employee.name,
+                department: employee.department,
+                carts: cartsTotal,
+                clayTons: clayTonsTotal,
+                workCount: workCount
+            };
+        });
+        
+        // Sort the employee totals
+        const sortedTotals = employeeTotals.sort((a, b) => {
+            let valueA, valueB;
+            
+            switch (dailyWorkTotalsSortColumn) {
+                case 'name':
+                    valueA = a.name.toLowerCase();
+                    valueB = b.name.toLowerCase();
+                    break;
+                case 'id':
+                    valueA = a.id.toLowerCase();
+                    valueB = b.id.toLowerCase();
+                    break;
+                case 'department':
+                    valueA = a.department.toLowerCase();
+                    valueB = b.department.toLowerCase();
+                    break;
+                case 'carts':
+                    valueA = a.carts;
+                    valueB = b.carts;
+                    break;
+                case 'clayTons':
+                    valueA = a.clayTons;
+                    valueB = b.clayTons;
+                    break;
+                case 'workCount':
+                    valueA = a.workCount;
+                    valueB = b.workCount;
+                    break;
+                default:
+                    return 0;
+            }
+            
+            if (typeof valueA === 'string') {
+                return dailyWorkTotalsSortDirection === 'asc' 
+                    ? valueA.localeCompare(valueB)
+                    : valueB.localeCompare(valueA);
+            } else {
+                return dailyWorkTotalsSortDirection === 'asc' 
+                    ? valueA - valueB
+                    : valueB - valueA;
+            }
+        });
+        
+        // Add rows to the table
+        sortedTotals.forEach(employee => {
+            const row = document.createElement('tr');
+            
+            if (currentUser.role === 'admin') {
+                // Admin sees both columns
+                row.innerHTML = `
+                    <td>${employee.name}</td>
+                    <td>${employee.id}</td>
+                    <td>${getDepartmentDisplayName(employee.department)}</td>
+                    <td><span>${employee.carts}</span></td>
+                    <td><span>${employee.clayTons}</span></td>
+                    <td><span>${employee.workCount}</span></td>
+                `;
+            } else if (currentUser.department === 'crushing-prep') {
+                row.innerHTML = `
+                    <td>${employee.name}</td>
+                    <td>${employee.id}</td>
+                    <td>${getDepartmentDisplayName(employee.department)}</td>
+                    <td><span>${employee.clayTons}</span></td>
+                    <td><span>${employee.workCount}</span></td>
+                `;
+            } else {
+                row.innerHTML = `
+                    <td>${employee.name}</td>
+                    <td>${employee.id}</td>
+                    <td>${getDepartmentDisplayName(employee.department)}</td>
+                    <td><span>${employee.carts}</span></td>
+                    <td><span>${employee.workCount}</span></td>
+                `;
+            }
+            
+            dailyWorkTotalsBody.appendChild(row);
+        });
+    } else {
+        dailyWorkTotalsSection.style.display = 'none';
+    }
+}
 
     // Update electrical/mechanical work totals
     function updateElectricalMechanicalTotals() {
@@ -6074,6 +6077,7 @@ function loadNotifications() {
 </script>
 </body>
 </html>
+
 
 
 
