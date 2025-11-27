@@ -2408,7 +2408,7 @@
             document.getElementById('printRecordsBtn').addEventListener('click', printRecords);
             
             // Projects button
-            document.getElementById('projectsBtn').addEventListener('click', showProjectsPage);
+            document.getElementById('projectsBtn').addEventListener('click', sPage);
             
             // Add project button
             document.getElementById('addProjectBtn').addEventListener('click', openAddProjectModal);
@@ -2655,7 +2655,7 @@ function applyPeriodFilter() {
             setupTotalsToggle();
         }
 
-      // Show projects page
+     // Show projects page
 function showProjectsPage() {
     document.getElementById('loginPage').style.display = 'none';
     document.getElementById('dashboardPage').style.display = 'none';
@@ -2663,17 +2663,20 @@ function showProjectsPage() {
     document.getElementById('projectsPage').style.display = 'block';
     document.getElementById('notificationsPage').style.display = 'none';
     
-    // Hide daily work totals sections
+    // Hide daily work totals sections AND department filter
     document.getElementById('dailyWorkTotalsSection').style.display = 'none';
     document.getElementById('electricalMechanicalTotalsSection').style.display = 'none';
+    document.getElementById('totalsDepartmentFilter').style.display = 'none';
     
     loadProjects();
 }
+
         // Toggle daily work totals visibility
 function setupTotalsToggle() {
     const toggleBtn = document.getElementById('toggleTotalsBtn');
     const dailyTotalsSection = document.getElementById('dailyWorkTotalsSection');
     const electricalTotalsSection = document.getElementById('electricalMechanicalTotalsSection');
+    const departmentFilter = document.getElementById('totalsDepartmentFilter');
     
     let totalsVisible = false;
     
@@ -2691,14 +2694,20 @@ function setupTotalsToggle() {
                 updateElectricalMechanicalTotals();
             }
             
+            // Show department filter for admin when showing totals
+            if (currentUser.role === 'admin') {
+                departmentFilter.style.display = 'block';
+            }
+            
             // Update button text and icon
             toggleBtn.innerHTML = '<i class="bi bi-eye-slash"></i> شاردنەوەی کۆی گشتی';
             toggleBtn.classList.remove('btn-outline-primary');
             toggleBtn.classList.add('btn-primary');
         } else {
-            // Hide totals sections
+            // Hide totals sections AND department filter
             dailyTotalsSection.style.display = 'none';
             electricalTotalsSection.style.display = 'none';
+            departmentFilter.style.display = 'none';
             
             // Update button text and icon
             toggleBtn.innerHTML = '<i class="bi bi-eye"></i> نیشاندانی کۆی گشتی';
@@ -2715,27 +2724,36 @@ function showNotificationsPage() {
     document.getElementById('projectsPage').style.display = 'none';
     document.getElementById('notificationsPage').style.display = 'block';
     
-    // Hide daily work totals sections
+    // Hide daily work totals sections AND department filter
     document.getElementById('dailyWorkTotalsSection').style.display = 'none';
     document.getElementById('electricalMechanicalTotalsSection').style.display = 'none';
+    document.getElementById('totalsDepartmentFilter').style.display = 'none';
     
     loadNotifications();
 }
 
-        // Back to dashboard from projects
-function backToDashboardFromProjects() {
+        function backToDashboardFromProjects() {
     document.getElementById('projectsPage').style.display = 'none';
     document.getElementById('dashboardPage').style.display = 'block';
 
+    // Show department filter for admin
+    if (currentUser.role === 'admin') {
+        document.getElementById('totalsDepartmentFilter').style.display = 'block';
+    }
+    
     // Show daily work totals sections again
     updateDailyWorkTotals();
     updateElectricalMechanicalTotals();
 }
-     // Back to dashboard from notifications
-function backToDashboardFromNotifications() {
+    function backToDashboardFromNotifications() {
     document.getElementById('notificationsPage').style.display = 'none';
     document.getElementById('dashboardPage').style.display = 'block';
 
+    // Show department filter for admin
+    if (currentUser.role === 'admin') {
+        document.getElementById('totalsDepartmentFilter').style.display = 'block';
+    }
+    
     // Show daily work totals sections again
     updateDailyWorkTotals();
     updateElectricalMechanicalTotals();
@@ -3220,9 +3238,10 @@ function viewWorkRecords(id) {
     document.getElementById('dashboardPage').style.display = 'none';
     document.getElementById('workRecordsPage').style.display = 'block';
     
-    // Hide daily work totals sections
+    // Hide daily work totals sections AND department filter
     document.getElementById('dailyWorkTotalsSection').style.display = 'none';
     document.getElementById('electricalMechanicalTotalsSection').style.display = 'none';
+    document.getElementById('totalsDepartmentFilter').style.display = 'none';
     
     // For mechanical and electrical-ac, show daily work tab
     document.getElementById('dailyWorkTab').style.display = 'inline-block';
@@ -3343,11 +3362,16 @@ function viewWorkRecords(id) {
         }
 
        
-// Back to dashboard
+// Back to dashboard functions - make sure they show the department filter for admin
 function backToDashboard() {
     document.getElementById('workRecordsPage').style.display = 'none';
     document.getElementById('dashboardPage').style.display = 'block';
 
+    // Show department filter for admin
+    if (currentUser.role === 'admin') {
+        document.getElementById('totalsDepartmentFilter').style.display = 'block';
+    }
+    
     // Show daily work totals sections again
     updateDailyWorkTotals();
     updateElectricalMechanicalTotals();
@@ -6047,6 +6071,7 @@ const selectedDepartments = Array.from(checkboxes).map(checkbox => checkbox.valu
 </script>
 </body>
 </html>
+
 
 
 
