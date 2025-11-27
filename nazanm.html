@@ -904,6 +904,11 @@
     color: #6c757d;
     font-style: italic;
 }
+         /* Ensure daily work totals sections are hidden by default */
+        .daily-work-totals,
+        .electrical-mechanical-totals {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -2621,49 +2626,53 @@ function applyTotalsDepartmentFilter() {
             updateElectricalMechanicalTotals();
         }
 
-        // Show projects page
-        function showProjectsPage() {
-            document.getElementById('loginPage').style.display = 'none';
-            document.getElementById('dashboardPage').style.display = 'none';
-            document.getElementById('workRecordsPage').style.display = 'none';
-            document.getElementById('projectsPage').style.display = 'block';
-            document.getElementById('notificationsPage').style.display = 'none';
-            document.getElementById('dailyWorkTotalsSection').style.display = 'none';
-            document.getElementById('electricalMechanicalTotalsSection').style.display = 'none';
-            
-            loadProjects();
-        }
-
-        // Show notifications page
-        function showNotificationsPage() {
-            document.getElementById('loginPage').style.display = 'none';
-            document.getElementById('dashboardPage').style.display = 'none';
-            document.getElementById('workRecordsPage').style.display = 'none';
-            document.getElementById('projectsPage').style.display = 'none';
-            document.getElementById('notificationsPage').style.display = 'block';
-            document.getElementById('dailyWorkTotalsSection').style.display = 'none';
-            document.getElementById('electricalMechanicalTotalsSection').style.display = 'none';
-            
-            loadNotifications();
-        }
+       // Show projects page
+function showProjectsPage() {
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('dashboardPage').style.display = 'none';
+    document.getElementById('workRecordsPage').style.display = 'none';
+    document.getElementById('projectsPage').style.display = 'block';
+    document.getElementById('notificationsPage').style.display = 'none';
+    
+    // Hide daily work totals sections
+    document.getElementById('dailyWorkTotalsSection').style.display = 'none';
+    document.getElementById('electricalMechanicalTotalsSection').style.display = 'none';
+    
+    loadProjects();
+}
+     // Show notifications page
+function showNotificationsPage() {
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('dashboardPage').style.display = 'none';
+    document.getElementById('workRecordsPage').style.display = 'none';
+    document.getElementById('projectsPage').style.display = 'none';
+    document.getElementById('notificationsPage').style.display = 'block';
+    
+    // Hide daily work totals sections
+    document.getElementById('dailyWorkTotalsSection').style.display = 'none';
+    document.getElementById('electricalMechanicalTotalsSection').style.display = 'none';
+    
+    loadNotifications();
+}
 
         // Back to dashboard from projects
-        function backToDashboardFromProjects() {
-            document.getElementById('projectsPage').style.display = 'none';
-            document.getElementById('dashboardPage').style.display = 'block';
+function backToDashboardFromProjects() {
+    document.getElementById('projectsPage').style.display = 'none';
+    document.getElementById('dashboardPage').style.display = 'block';
 
-             updateDailyWorkTotals();
-             updateElectricalMechanicalTotals();
-        }
+    // Show daily work totals sections again
+    updateDailyWorkTotals();
+    updateElectricalMechanicalTotals();
+}
+     / Back to dashboard from notifications
+function backToDashboardFromNotifications() {
+    document.getElementById('notificationsPage').style.display = 'none';
+    document.getElementById('dashboardPage').style.display = 'block';
 
-        // Back to dashboard from notifications
-        function backToDashboardFromNotifications() {
-            document.getElementById('notificationsPage').style.display = 'none';
-            document.getElementById('dashboardPage').style.display = 'block';
-
-            updateDailyWorkTotals();
-            updateElectricalMechanicalTotals();
-        }
+    // Show daily work totals sections again
+    updateDailyWorkTotals();
+    updateElectricalMechanicalTotals();
+}
 
         // Update notification count
         function updateNotificationCount() {
@@ -3112,63 +3121,7 @@ function sortElectricalMechanicalTotals(column) {
             alert(`وردەکاری کارمەند:\nژمارەی کارمەند: ${employee.id}\nناو: ${employee.name}\nپیشە: ${employee.position}\nبەش: ${employee.department}\nهەڵسەنگاندنی ڕۆژانە: ${calculateDailyRating(employee).toFixed(1)}\nهەڵسەنگاندنی کارەکانی دیکە: ${calculateOtherRating(employee).toFixed(1)}`);
         }
 
-        // View work records
-        function viewWorkRecords(id) {
-            const employee = employees.find(emp => emp.id === id);
-            if (!employee) return;
-            
-            currentEmployeeId = id;
-            document.getElementById('currentEmployeeName').textContent = employee.name;
-            
-            // Show work records page
-            document.getElementById('dashboardPage').style.display = 'none';
-            document.getElementById('workRecordsPage').style.display = 'block';
-            
-            // For mechanical and electrical-ac, show daily work tab
-            document.getElementById('dailyWorkTab').style.display = 'inline-block';
-            currentRecordType = 'daily';
-            
-            // Show/hide special record button
-            document.getElementById('addSpecialRecordBtn').style.display = 
-                (employee.department === 'electrical-ac' || employee.department === 'mechanical') ? 'inline-block' : 'none';
-            
-            // Show/hide daily work totals for individual employee
-            const dailyWorkTotalsSection = document.getElementById('employeeDailyWorkTotals');
-            const electricalMechanicalTotalsSection = document.getElementById('employeeElectricalMechanicalTotals');
-            const employeeTotalsName = document.getElementById('employeeTotalsName');
-            const employeeElectricalMechanicalName = document.getElementById('employeeElectricalMechanicalName');
-            const employeeCartsContainer = document.getElementById('employeeCartsContainer');
-            const employeeClayTonsContainer = document.getElementById('employeeClayTonsContainer');
-            
-            if (['crushing-prep', 'cutting-setting', 'unsetting'].includes(employee.department)) {
-                dailyWorkTotalsSection.style.display = 'block';
-                electricalMechanicalTotalsSection.style.display = 'none';
-                employeeTotalsName.textContent = employee.name;
-                
-                // Show appropriate columns based on department
-                if (employee.department === 'crushing-prep') {
-                    employeeCartsContainer.style.display = 'none';
-                    employeeClayTonsContainer.style.display = 'block';
-                } else {
-                    employeeCartsContainer.style.display = 'block';
-                    employeeClayTonsContainer.style.display = 'none';
-                }
-                
-                updateEmployeeDailyWorkTotals(employee);
-            } else if (employee.department === 'mechanical' || employee.department === 'electrical-ac') {
-                dailyWorkTotalsSection.style.display = 'none';
-                electricalMechanicalTotalsSection.style.display = 'block';
-                employeeElectricalMechanicalName.textContent = employee.name;
-                
-                updateEmployeeElectricalMechanicalTotals(employee);
-            } else {
-                dailyWorkTotalsSection.style.display = 'none';
-                electricalMechanicalTotalsSection.style.display = 'none';
-            }
-            
-            updateRecordTabs();
-            loadWorkRecords(employee);
-        }
+       iewWorkRecords
 
         // Edit employee
         function editEmployee(id) {
@@ -3242,15 +3195,16 @@ function sortElectricalMechanicalTotals(column) {
             }
         }
 
-        // Back to dashboard
-        function backToDashboard() {
-            document.getElementById('workRecordsPage').style.display = 'none';
-            document.getElementById('dashboardPage').style.display = 'block';
+       
+// Back to dashboard
+function backToDashboard() {
+    document.getElementById('workRecordsPage').style.display = 'none';
+    document.getElementById('dashboardPage').style.display = 'block';
 
-            updateDailyWorkTotals();
-            updateElectricalMechanicalTotals();
-        }
-
+    // Show daily work totals sections again
+    updateDailyWorkTotals();
+    updateElectricalMechanicalTotals();
+}
         // Switch record type
         function switchRecordType(type) {
             currentRecordType = type;
@@ -5946,3 +5900,4 @@ const selectedDepartments = Array.from(checkboxes).map(checkbox => checkbox.valu
 </script>
 </body>
 </html>
+
