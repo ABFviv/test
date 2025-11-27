@@ -1614,63 +1614,104 @@
         </div>
     </div>
 
-    <!-- Edit Work Record Modal -->
-    <div class="modal fade" id="editWorkRecordModal" tabindex="-1" aria-labelledby="editWorkRecordModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editWorkRecordModalLabel">دەستکاری کردنی تۆماری کار</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editWorkRecordForm">
-                        <input type="hidden" id="editRecordType">
-                        <input type="hidden" id="editRecordIndex">
-                        <div class="mb-3">
-                            <label for="editWorkDate" class="form-label">بەروار</label>
-                            <input type="date" class="form-control" id="editWorkDate" required>
-                        </div>
-                        <div class="mb-3" id="editCartsContainer">
-                            <label for="editWorkCarts" class="form-label">ژمارەی عەرەبانەکان</label>
-                            <input type="number" class="form-control" id="editWorkCarts" min="1" required>
-                        </div>
-                        <div class="mb-3" id="editNameContainer" style="display: none;">
-                            <label for="editWorkName" class="form-label">ناوی کار</label>
-                            <input type="text" class="form-control" id="editWorkName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editWorkRating" class="form-label">هەڵسەنگاندن (-100 بۆ 100)</label>
-                            <div class="rating-control">
-                                <div class="rating-slider-container">
-                                    <div class="rating-arrows">
-                                        <button type="button" class="rating-arrow-btn" onclick="adjustRating('editWorkRating', 1)">
-                                            <i class="bi bi-arrow-up"></i>
-                                        </button>
-                                        <button type="button" class="rating-arrow-btn" onclick="adjustRating('editWorkRating', -1)">
-                                            <i class="bi bi-arrow-down"></i>
-                                        </button>
-                                    </div>
-                                    <input type="range" class="form-range" id="editWorkRating" min="-100" max="100" value="0" required>
-                                    <span id="editWorkRatingValue" class="employee-rating-value">0</span>
+<!-- Edit Work Record Modal - Add these fields -->
+<div class="modal fade" id="editWorkRecordModal" tabindex="-1" aria-labelledby="editWorkRecordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editWorkRecordModalLabel">دەستکاری کردنی تۆماری کار</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editWorkRecordForm">
+                    <input type="hidden" id="editRecordType">
+                    <input type="hidden" id="editRecordIndex">
+                    <div class="mb-3">
+                        <label for="editWorkDate" class="form-label">بەروار</label>
+                        <input type="date" class="form-control" id="editWorkDate" required>
+                    </div>
+                    <div class="mb-3" id="editCartsContainer">
+                        <label for="editWorkCarts" class="form-label">ژمارەی عەرەبانەکان</label>
+                        <input type="number" class="form-control" id="editWorkCarts" min="1" required>
+                    </div>
+                    <div class="mb-3" id="editNameContainer" style="display: none;">
+                        <label for="editWorkName" class="form-label">ناوی کار</label>
+                        <input type="text" class="form-control" id="editWorkName" required>
+                    </div>
+                    
+                    <!-- Add Special Work Fields for Admin -->
+                    <div class="mb-3" id="editSpecialWorkContainer" style="display: none;">
+                        <label for="editWorkDepartment" class="form-label">بەشی کار</label>
+                        <select class="form-select" id="editWorkDepartment">
+                            <option value="">بەش هەڵبژێرە</option>
+                            <option value="crushing-prep">هاڕین و ئامادەکردن</option>
+                            <option value="cutting-setting">بڕین و بارکردن</option>
+                            <option value="klin">فڕن</option>
+                            <option value="unsetting">داگرتن</option>
+                            <option value="mechanical">میکانیک</option>
+                            <option value="electrical-ac">کارەبا</option>
+                            <option value="line-one">هێڵی یەک</option>
+                            <option value="line-two-general">گشتی هێڵی دوو</option>
+                        </select>
+                        
+                        <div class="mt-3">
+                            <label class="form-label">کاتی کارکردن</label>
+                            <div class="time-input-group mb-2">
+                                <div>
+                                    <label for="editWorkHours" class="form-label">کاتژمێر</label>
+                                    <input type="number" class="form-control time-input" id="editWorkHours" min="0" max="24" value="0">
+                                </div>
+                                <div>
+                                    <label for="editWorkMinutes" class="form-label">خولەک</label>
+                                    <input type="number" class="form-control time-input" id="editWorkMinutes" min="0" max="59" value="0">
+                                </div>
+                            </div>
+                            <div class="time-range-inputs">
+                                <div>
+                                    <label for="editStartTime" class="form-label">کاتی دەستپێک</label>
+                                    <input type="time" class="form-control" id="editStartTime">
+                                </div>
+                                <div>
+                                    <label for="editEndTime" class="form-label">کاتی کۆتایی</label>
+                                    <input type="time" class="form-control" id="editEndTime">
                                 </div>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="editWorkNote" class="form-label">تێبینی</label>
-                            <textarea class="form-control" id="editWorkNote" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="editWorkRating" class="form-label">هەڵسەنگاندن (-100 بۆ 100)</label>
+                        <div class="rating-control">
+                            <div class="rating-slider-container">
+                                <div class="rating-arrows">
+                                    <button type="button" class="rating-arrow-btn" onclick="adjustRating('editWorkRating', 1)">
+                                        <i class="bi bi-arrow-up"></i>
+                                    </button>
+                                    <button type="button" class="rating-arrow-btn" onclick="adjustRating('editWorkRating', -1)">
+                                        <i class="bi bi-arrow-down"></i>
+                                    </button>
+                                </div>
+                                <input type="range" class="form-range" id="editWorkRating" min="-100" max="100" value="0" required>
+                                <span id="editWorkRatingValue" class="employee-rating-value">0</span>
+                            </div>
                         </div>
-                        <div class="edit-info" id="editTimeInfo">
-                            <!-- Edit time information will be shown here -->
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">پاشتگەستبوونەوە</button>
-                    <button type="button" class="btn btn-primary" id="saveEditWorkRecordBtn">گۆڕانگاری</button>
-                </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editWorkNote" class="form-label">تێبینی</label>
+                        <textarea class="form-control" id="editWorkNote" rows="3"></textarea>
+                    </div>
+                    <div class="edit-info" id="editTimeInfo">
+                        <!-- Edit time information will be shown here -->
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">پاشتگەستبوونەوە</button>
+                <button type="button" class="btn btn-primary" id="saveEditWorkRecordBtn">گۆڕانگاری</button>
             </div>
         </div>
     </div>
+</div>
 
     <!-- Delete Employee Confirmation Modal -->
     <div class="modal fade" id="deleteEmployeeModal" tabindex="-1" aria-labelledby="deleteEmployeeModalLabel" aria-hidden="true">
@@ -3550,150 +3591,177 @@ function backToDashboard() {
         }
 
         // Edit work record
-        function editWorkRecord(index, type) {
-            const employee = employees.find(emp => emp.id === currentEmployeeId);
-            if (!employee) return;
-            
-            const workRecords = type === 'daily' ? employee.dailyWork : employee.otherWork;
-            const record = workRecords[index];
-            
-            if (!record) return;
-            
-            // Check if the record was created more than 2 hours ago for supervisors
-            if (currentUser.role === 'supervisor') {
-                const createdAt = new Date(record.createdAt);
-                const now = new Date();
-                const hoursDiff = (now - createdAt) / (1000 * 60 * 60);
-                
-                if (hoursDiff > 2) {
-                    showNotification('ئەم تۆمارە ناتواندرێت دەستکاری بکرێت بەهۆی تێپەڕبوونی زیاتر لە ٢ کاتژمێر', 'danger');
-                    return;
-                }
-            }
-            
-            // Populate the edit form
-            document.getElementById('editRecordType').value = type;
-            document.getElementById('editRecordIndex').value = index;
-            document.getElementById('editWorkDate').value = record.date;
-            document.getElementById('editWorkRating').value = record.rate;
-            document.getElementById('editWorkRatingValue').textContent = record.rate;
-            document.getElementById('editWorkNote').value = record.note || '';
+function editWorkRecord(index, type) {
+    const employee = employees.find(emp => emp.id === currentEmployeeId);
+    if (!employee) return;
+    
+    const workRecords = type === 'daily' ? employee.dailyWork : employee.otherWork;
+    const record = workRecords[index];
+    
+    if (!record) return;
+    
+    // Check if the record was created more than 2 hours ago for supervisors
+    if (currentUser.role === 'supervisor') {
+        const createdAt = new Date(record.createdAt);
+        const now = new Date();
+        const hoursDiff = (now - createdAt) / (1000 * 60 * 60);
         
-        // Show/hide appropriate fields based on record type
-        if (type === 'daily') {
-            // Check if this is a special daily work record
-            if (record.isSpecial) {
-                document.getElementById('editCartsContainer').style.display = 'none';
-                document.getElementById('editNameContainer').style.display = 'block';
-                document.getElementById('editWorkName').value = record.name;
-            } else {
-                document.getElementById('editCartsContainer').style.display = 'block';
-                document.getElementById('editNameContainer').style.display = 'none';
-                
-                // Set appropriate field based on department
-                const employee = employees.find(emp => emp.id === currentEmployeeId);
-                if (employee && employee.department === 'crushing-prep') {
-                    document.querySelector('#editCartsContainer label').textContent = 'ژمارەی طەنی خۆڵ';
-                    document.getElementById('editWorkCarts').value = record.clayTons || '';
-                } else {
-                    document.querySelector('#editCartsContainer label').textContent = 'ژمارەی عەرەبانەکان';
-                    document.getElementById('editWorkCarts').value = record.carts || '';
-                }
-            }
-        } else {
+        if (hoursDiff > 2) {
+            showNotification('ئەم تۆمارە ناتواندرێت دەستکاری بکرێت بەهۆی تێپەڕبوونی زیاتر لە ٢ کاتژمێر', 'danger');
+            return;
+        }
+    }
+    
+    // Populate the edit form
+    document.getElementById('editRecordType').value = type;
+    document.getElementById('editRecordIndex').value = index;
+    document.getElementById('editWorkDate').value = record.date;
+    document.getElementById('editWorkRating').value = record.rate;
+    document.getElementById('editWorkRatingValue').textContent = record.rate;
+    document.getElementById('editWorkNote').value = record.note || '';
+    
+    // Show/hide appropriate fields based on record type
+    if (type === 'daily') {
+        // Check if this is a special daily work record
+        if (record.isSpecial) {
             document.getElementById('editCartsContainer').style.display = 'none';
             document.getElementById('editNameContainer').style.display = 'block';
             document.getElementById('editWorkName').value = record.name;
-        }
-        
-        // Update edit time info for supervisors
-        if (currentUser.role === 'supervisor') {
-            const createdAt = new Date(record.createdAt);
-            const now = new Date();
-            const timeLeft = Math.max(0, 120 - Math.floor((now - createdAt) / (1000 * 60)));
-            document.getElementById('editTimeInfo').innerHTML = `
-                <i class="bi bi-clock"></i> 
-                دروستکراوە: ${formatDate(record.createdAt)} | 
-                کاتێکی ماوە بۆ چاککردن: ${timeLeft} خولەک
-            `;
-        } else {
-            document.getElementById('editTimeInfo').innerHTML = `
-                <i class="bi bi-clock"></i> 
-                دروستکراوە: ${formatDate(record.createdAt)} 
-                ${record.lastEditedAt ? ` | کۆتا چاککردن: ${formatDate(record.lastEditedAt)}` : ''}
-            `;
-        }
-        
-        // Show the modal
-        const modal = new bootstrap.Modal(document.getElementById('editWorkRecordModal'));
-        modal.show();
-    }
-
-    // Save edited work record
-    async function saveEditedWorkRecord() {
-        const type = document.getElementById('editRecordType').value;
-        const index = parseInt(document.getElementById('editRecordIndex').value);
-        const date = document.getElementById('editWorkDate').value;
-        const rate = document.getElementById('editWorkRating').value;
-        const note = document.getElementById('editWorkNote').value;
-        
-        const employee = employees.find(emp => emp.id === currentEmployeeId);
-        if (!employee) return;
-        
-        const workRecords = type === 'daily' ? employee.dailyWork : employee.otherWork;
-        const record = workRecords[index];
-        
-        if (!record) return;
-        
-        // Check if the record was created more than 2 hours ago for supervisors
-        if (currentUser.role === 'supervisor') {
-            const createdAt = new Date(record.createdAt);
-            const now = new Date();
-            const hoursDiff = (now - createdAt) / (1000 * 60 * 60);
             
-            if (hoursDiff > 2) {
-                showNotification('ئەم تۆمارە ناتواندرێت دەستکاری بکرێت بەهۆی تێپەڕبوونی زیاتر لە ٢ کاتژمێر', 'danger');
-                const modal = bootstrap.Modal.getInstance(document.getElementById('editWorkRecordModal'));
-                modal.hide();
-                return;
-            }
-        }
-        
-        // Update the record
-        record.date = date;
-        record.rate = rate;
-        record.note = note;
-        record.lastEditedAt = new Date().toISOString();
-        
-        if (type === 'daily') {
-            // Check if this is a special daily work record
-            if (record.isSpecial) {
-                record.name = document.getElementById('editWorkName').value;
+            // Show special work fields for admin
+            if (currentUser.role === 'admin') {
+                document.getElementById('editSpecialWorkContainer').style.display = 'block';
+                document.getElementById('editWorkDepartment').value = record.workDepartment || '';
+                document.getElementById('editWorkHours').value = record.totalHours || 0;
+                document.getElementById('editWorkMinutes').value = record.totalMinutes || 0;
+                document.getElementById('editStartTime').value = record.startTime || '';
+                document.getElementById('editEndTime').value = record.endTime || '';
             } else {
-                // Update appropriate field based on department
-                if (employee.department === 'crushing-prep') {
-                    record.clayTons = document.getElementById('editWorkCarts').value;
-                    delete record.carts;
-                } else {
-                    record.carts = document.getElementById('editWorkCarts').value;
-                    delete record.clayTons;
-                }
+                document.getElementById('editSpecialWorkContainer').style.display = 'none';
             }
         } else {
-            record.name = document.getElementById('editWorkName').value;
+            document.getElementById('editCartsContainer').style.display = 'block';
+            document.getElementById('editNameContainer').style.display = 'none';
+            document.getElementById('editSpecialWorkContainer').style.display = 'none';
+            
+            // Set appropriate field based on department
+            const employee = employees.find(emp => emp.id === currentEmployeeId);
+            if (employee && employee.department === 'crushing-prep') {
+                document.querySelector('#editCartsContainer label').textContent = 'ژمارەی طەنی خۆڵ';
+                document.getElementById('editWorkCarts').value = record.clayTons || '';
+            } else {
+                document.querySelector('#editCartsContainer label').textContent = 'ژمارەی عەرەبانەکان';
+                document.getElementById('editWorkCarts').value = record.carts || '';
+            }
         }
+    } else {
+        document.getElementById('editCartsContainer').style.display = 'none';
+        document.getElementById('editNameContainer').style.display = 'block';
+        document.getElementById('editSpecialWorkContainer').style.display = 'none';
+        document.getElementById('editWorkName').value = record.name;
+    }
+    
+    // Update edit time info for supervisors
+    if (currentUser.role === 'supervisor') {
+        const createdAt = new Date(record.createdAt);
+        const now = new Date();
+        const timeLeft = Math.max(0, 120 - Math.floor((now - createdAt) / (1000 * 60)));
+        document.getElementById('editTimeInfo').innerHTML = `
+            <i class="bi bi-clock"></i> 
+            دروستکراوە: ${formatDate(record.createdAt)} | 
+            کاتێکی ماوە بۆ چاککردن: ${timeLeft} خولەک
+        `;
+    } else {
+        document.getElementById('editTimeInfo').innerHTML = `
+            <i class="bi bi-clock"></i> 
+            دروستکراوە: ${formatDate(record.createdAt)} 
+            ${record.lastEditedAt ? ` | کۆتا چاککردن: ${formatDate(record.lastEditedAt)}` : ''}
+        `;
+    }
+    
+    // Show the modal
+    const modal = new bootstrap.Modal(document.getElementById('editWorkRecordModal'));
+    modal.show();
+}
+// Save edited work record
+async function saveEditedWorkRecord() {
+    const type = document.getElementById('editRecordType').value;
+    const index = parseInt(document.getElementById('editRecordIndex').value);
+    const date = document.getElementById('editWorkDate').value;
+    const rate = document.getElementById('editWorkRating').value;
+    const note = document.getElementById('editWorkNote').value;
+    
+    const employee = employees.find(emp => emp.id === currentEmployeeId);
+    if (!employee) return;
+    
+    const workRecords = type === 'daily' ? employee.dailyWork : employee.otherWork;
+    const record = workRecords[index];
+    
+    if (!record) return;
+    
+    // Check if the record was created more than 2 hours ago for supervisors
+    if (currentUser.role === 'supervisor') {
+        const createdAt = new Date(record.createdAt);
+        const now = new Date();
+        const hoursDiff = (now - createdAt) / (1000 * 60 * 60);
         
-        const success = await saveEmployeeToFirebase(employee);
-        
-        if (success) {
-            loadWorkRecords(employee);
+        if (hoursDiff > 2) {
+            showNotification('ئەم تۆمارە ناتواندرێت دەستکاری بکرێت بەهۆی تێپەڕبوونی زیاتر لە ٢ کاتژمێر', 'danger');
             const modal = bootstrap.Modal.getInstance(document.getElementById('editWorkRecordModal'));
             modal.hide();
-            showNotification('تۆماری کار بەسەرکەوتووی جێبەجێ کرا', 'success');
-        } else {
-            showNotification('هەڵە لە نوێکردنەوەی تۆماری کار', 'danger');
+            return;
         }
     }
+    
+    // Update the record
+    record.date = date;
+    record.rate = rate;
+    record.note = note;
+    record.lastEditedAt = new Date().toISOString();
+    record.lastEditedBy = currentUser.username;
+    
+    if (type === 'daily') {
+        // Check if this is a special daily work record
+        if (record.isSpecial) {
+            record.name = document.getElementById('editWorkName').value;
+            
+            // Update special work fields if admin
+            if (currentUser.role === 'admin') {
+                record.workDepartment = document.getElementById('editWorkDepartment').value;
+                record.totalHours = document.getElementById('editWorkHours').value;
+                record.totalMinutes = document.getElementById('editWorkMinutes').value;
+                record.startTime = document.getElementById('editStartTime').value;
+                record.endTime = document.getElementById('editEndTime').value;
+            }
+        } else {
+            // Update appropriate field based on department
+            if (employee.department === 'crushing-prep') {
+                record.clayTons = document.getElementById('editWorkCarts').value;
+                delete record.carts;
+            } else {
+                record.carts = document.getElementById('editWorkCarts').value;
+                delete record.clayTons;
+            }
+        }
+    } else {
+        record.name = document.getElementById('editWorkName').value;
+    }
+    
+    const success = await saveEmployeeToFirebase(employee);
+    
+    if (success) {
+        loadWorkRecords(employee);
+        const modal = bootstrap.Modal.getInstance(document.getElementById('editWorkRecordModal'));
+        modal.hide();
+        showNotification('تۆماری کار بەسەرکەوتووی جێبەجێ کرا', 'success');
+        
+        // Update totals if needed
+        updateDailyWorkTotals();
+        updateElectricalMechanicalTotals();
+    } else {
+        showNotification('هەڵە لە نوێکردنەوەی تۆماری کار', 'danger');
+    }
+}
 
     // Delete work record
     async function deleteWorkRecord(index, type) {
@@ -6118,6 +6186,7 @@ async function deleteNotification(notificationId) {
 </script>
 </body>
 </html>
+
 
 
 
