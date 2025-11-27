@@ -5503,135 +5503,153 @@ function loadNotifications() {
         return employee ? employee.name : 'کارمەندی نەناسراو';
     }
 
-    // Render notifications
-    function renderNotifications(notificationsToRender) {
-        const notificationsContainer = document.getElementById('notificationsContainer');
-        notificationsContainer.innerHTML = '';
-        
-        if (notificationsToRender.length === 0) {
-            notificationsContainer.innerHTML = '<p class="text-muted">هیچ ئاگادارکردنەوەیەک نییە</p>';
-            return;
-        }
-        
-        // Sort notifications by creation date (newest first)
-        notificationsToRender.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        
-        // Group notifications by work details
-        const notificationGroups = {};
-        
-        notificationsToRender.forEach(notification => {
-            if (notification.relatedEmployees && notification.relatedEmployees.length > 0) {
-                // This is a grouped notification
-                const workKey = `${notification.workDetails.date}_${notification.workDetails.name}_${notification.workDetails.workDepartment}_${notification.workDetails.totalHours}_${notification.workDetails.totalMinutes}_${notification.workDetails.startTime}_${notification.workDetails.endTime}`;
-                
-                if (!notificationGroups[workKey]) {
-                    notificationGroups[workKey] = {
-                        ...notification,
-                        allEmployees: [...notification.relatedEmployees]
-                    };
-                }
-            } else {
-                // Individual notification
-                const notificationDiv = createNotificationDiv(notification);
-                notificationsContainer.appendChild(notificationDiv);
+// Render notifications
+function renderNotifications(notificationsToRender) {
+    const notificationsContainer = document.getElementById('notificationsContainer');
+    notificationsContainer.innerHTML = '';
+    
+    if (notificationsToRender.length === 0) {
+        notificationsContainer.innerHTML = '<p class="text-muted">هیچ ئاگادارکردنەوەیەک نییە</p>';
+        return;
+    }
+    
+    // Sort notifications by creation date (newest first)
+    notificationsToRender.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    
+    // Group notifications by work details
+    const notificationGroups = {};
+    
+    notificationsToRender.forEach(notification => {
+        if (notification.relatedEmployees && notification.relatedEmployees.length > 0) {
+            // This is a grouped notification
+            const workKey = `${notification.workDetails.date}_${notification.workDetails.name}_${notification.workDetails.workDepartment}_${notification.workDetails.totalHours}_${notification.workDetails.totalMinutes}_${notification.workDetails.startTime}_${notification.workDetails.endTime}`;
+            
+            if (!notificationGroups[workKey]) {
+                notificationGroups[workKey] = {
+                    ...notification,
+                    allEmployees: [...notification.relatedEmployees]
+                };
             }
-        });
-        
-        // Render grouped notifications
-        for (const workKey in notificationGroups) {
-            const notification = notificationGroups[workKey];
-            const notificationDiv = createGroupedNotificationDiv(notification);
+        } else {
+            // Individual notification
+            const notificationDiv = createNotificationDiv(notification);
             notificationsContainer.appendChild(notificationDiv);
         }
+    });
+    
+    // Render grouped notifications
+    for (const workKey in notificationGroups) {
+        const notification = notificationGroups[workKey];
+        const notificationDiv = createGroupedNotificationDiv(notification);
+        notificationsContainer.appendChild(notificationDiv);
     }
+}
 
     // Create individual notification div
-    function createNotificationDiv(notification) {
-        const notificationDiv = document.createElement('div');
-        notificationDiv.className = `notification-item ${notification.status}`;
-        
-        let actionsHtml = '';
-        
-        if (notification.status === 'pending' && 
-            (currentUser.role === 'admin' || currentUser.role === 'supervisor')) {
-            actionsHtml = `
-                <div class="notification-actions">
-                    <button class="btn btn-sm btn-success confirm-notification-btn" data-id="${notification.id}">
-                        <i class="bi bi-check"></i> پەسەندکردن
-                    </button>
-                    <button class="btn btn-sm btn-danger reject-notification-btn ms-1" data-id="${notification.id}">
-                        <i class="bi bi-x"></i> ڕەتکردنەوە
-                    </button>
-                </div>
-            `;
-        }
-        
-        // Add edit/delete buttons - only admin can edit
-        if (currentUser.role === 'admin') {
-            actionsHtml += `
-                <div class="notification-actions mt-2">
-                    <button class="btn btn-sm btn-warning edit-notification-btn" data-id="${notification.id}">
-                        <i class="bi bi-pencil"></i> چاککردن
-                    </button>
-                    <button class="btn btn-sm btn-danger delete-notification-btn ms-1" data-id="${notification.id}">
-                        <i class="bi bi-trash"></i> سڕینەوە
-                    </button>
-                </div>
-            `;
-        } else if (currentUser.role === 'admin') {
-            // Supervisors can only delete
-            actionsHtml += `
-                <div class="notification-actions mt-2">
-                    <button class="btn btn-sm btn-danger delete-notification-btn" data-id="${notification.id}">
-                        <i class="bi bi-trash"></i> سڕینەوە
-                    </button>
-                </div>
-            `;
-        }
-        
-        // Add notification details
-        let detailsHtml = '';
-        if (notification.relatedWorkRecord) {
-            detailsHtml = `
-                <div class="notification-details">
-                    <h6>وردەکاری کار:</h6>
-                    <p><strong>ناوی کار:</strong> ${notification.relatedWorkRecord.name}</p>
-                    <p><strong>بەش:</strong> ${getDepartmentDisplayName(notification.relatedWorkRecord.workDepartment)}</p>
-                    ${notification.relatedWorkRecord.totalHours ? `<p><strong>کۆی کات:</strong> ${notification.relatedWorkRecord.totalHours} کاتژمێر و ${notification.relatedWorkRecord.totalMinutes} خولەک</p>` : ''}
-                    ${notification.relatedWorkRecord.startTime && notification.relatedWorkRecord.endTime ? `<p><strong>کات:</strong> ${notification.relatedWorkRecord.startTime} بۆ ${notification.relatedWorkRecord.endTime}</p>` : ''}
-                    <p><strong>هەڵسەنگاندن:</strong> ${notification.relatedWorkRecord.rate}</p>
-                    <p><strong>تێبینی:</strong> ${notification.relatedWorkRecord.note || 'هیچ تێبینیەک نییە'}</p>
-                    ${notification.relatedEmployeeId ? `
-                    <div class="notification-employee-list">
-                        <h6>کارمەندەکان:</h6>
-                        <div class="notification-employee-item">
-                            <span>${getEmployeeName(notification.relatedEmployeeId)}</span>
-                            <span>هەڵسەنگاندن: ${notification.relatedWorkRecord.rate}</span>
-                        </div>
-                    </div>
-                    ` : ''}
-                </div>
-            `;
-        }
-        
-        notificationDiv.innerHTML = `
-            <h6>${notification.title}</h6>
-            <p>${notification.message}</p>
-            ${detailsHtml}
-            <small class="text-muted">دروستکراوە: ${formatDate(notification.createdAt)}</small>
-            <div><small>دۆخ: ${getNotificationStatusText(notification.status)}</small></div>
-            ${notification.resolvedAt ? `<div><small>چارەسەرکراوە: ${formatDate(notification.resolvedAt)}</small></div>` : ''}
-            ${notification.resolvedBy ? `<div><small>چارەسەرکراوە لەلایەن: ${notification.resolvedBy}</small></div>` : ''}
-            ${notification.confirmationNote ? `<div><small>تێبینی: ${notification.confirmationNote}</small></div>` : ''}
-            ${actionsHtml}
+function createNotificationDiv(notification) {
+    const notificationDiv = document.createElement('div');
+    notificationDiv.className = `notification-item ${notification.status}`;
+    
+    let actionsHtml = '';
+    
+    if (notification.status === 'pending' && 
+        (currentUser.role === 'admin' || currentUser.role === 'supervisor')) {
+        actionsHtml = `
+            <div class="notification-actions">
+                <button class="btn btn-sm btn-success confirm-notification-btn" data-id="${notification.id}">
+                    <i class="bi bi-check"></i> پەسەندکردن
+                </button>
+                <button class="btn btn-sm btn-danger reject-notification-btn ms-1" data-id="${notification.id}">
+                    <i class="bi bi-x"></i> ڕەتکردنەوە
+                </button>
+            </div>
         `;
-        
-        // Add event listeners to buttons
-        addNotificationEventListeners(notificationDiv, notification);
-        
-        return notificationDiv;
     }
-
+    
+    // Add edit/delete buttons - admin can always edit/delete regardless of status
+    if (currentUser.role === 'admin') {
+        actionsHtml += `
+            <div class="notification-actions mt-2">
+                <button class="btn btn-sm btn-warning edit-notification-btn" data-id="${notification.id}">
+                    <i class="bi bi-pencil"></i> چاککردن
+                </button>
+                <button class="btn btn-sm btn-danger delete-notification-btn ms-1" data-id="${notification.id}">
+                    <i class="bi bi-trash"></i> سڕینەوە
+                </button>
+            </div>
+        `;
+    } else if (currentUser.role === 'supervisor' && notification.status === 'pending') {
+        // Supervisors can only delete pending notifications
+        actionsHtml += `
+            <div class="notification-actions mt-2">
+                <button class="btn btn-sm btn-danger delete-notification-btn" data-id="${notification.id}">
+                    <i class="bi bi-trash"></i> سڕینەوە
+                </button>
+            </div>
+        `;
+    }
+    
+    // Add status info
+    let statusInfo = '';
+    if (notification.status === 'confirmed') {
+        statusInfo = `<div class="text-success mt-2"><i class="bi bi-check-circle"></i> پەسەندکراوە - ${notification.confirmedBy || 'بەڕێوەبەر'}</div>`;
+        if (notification.confirmationNote) {
+            statusInfo += `<div class="text-muted small">تێبینی: ${notification.confirmationNote}</div>`;
+        }
+    } else if (notification.status === 'rejected') {
+        statusInfo = `<div class="text-danger mt-2"><i class="bi bi-x-circle"></i> ڕەتکراوەتەوە - ${notification.rejectedBy || 'بەڕێوەبەر'}</div>`;
+        if (notification.rejectionNote) {
+            statusInfo += `<div class="text-muted small">تێبینی: ${notification.rejectionNote}</div>`;
+        }
+    }
+    
+    notificationDiv.innerHTML = `
+        <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+                <h6>${notification.title || 'ئاگادارکردنەوە'}</h6>
+                <p class="mb-1">${notification.message}</p>
+                <small class="text-muted">کاتی دروستکردن: ${formatDate(notification.createdAt)}</small>
+                ${statusInfo}
+            </div>
+        </div>
+        ${actionsHtml}
+    `;
+    
+    // Add event listeners
+    if (notification.status === 'pending' && (currentUser.role === 'admin' || currentUser.role === 'supervisor')) {
+        notificationDiv.querySelector('.confirm-notification-btn').addEventListener('click', function() {
+            notificationToConfirm = notification;
+            document.getElementById('confirmNotificationNote').value = '';
+            const modal = new bootstrap.Modal(document.getElementById('confirmNotificationModal'));
+            modal.show();
+        });
+        
+        notificationDiv.querySelector('.reject-notification-btn').addEventListener('click', function() {
+            notificationToReject = notification;
+            document.getElementById('rejectNotificationNote').value = '';
+            const modal = new bootstrap.Modal(document.getElementById('rejectNotificationModal'));
+            modal.show();
+        });
+    }
+    
+    // Add edit/delete event listeners for admin
+    if (currentUser.role === 'admin') {
+        notificationDiv.querySelector('.edit-notification-btn').addEventListener('click', function() {
+            editNotification(notification.id);
+        });
+        
+        notificationDiv.querySelector('.delete-notification-btn').addEventListener('click', function() {
+            deleteNotification(notification.id);
+        });
+    } else if (currentUser.role === 'supervisor' && notification.status === 'pending') {
+        // Supervisor can only delete pending notifications
+        notificationDiv.querySelector('.delete-notification-btn').addEventListener('click', function() {
+            deleteNotification(notification.id);
+        });
+    }
+    
+    return notificationDiv;
+}
     // Create grouped notification div
     function createGroupedNotificationDiv(notification) {
         const notificationDiv = document.createElement('div');
@@ -5904,30 +5922,53 @@ function loadNotifications() {
         }
     }
 
-    // Edit notification
-    function editNotification(notificationId) {
-        // This would open a modal to edit the notification
-        // For now, we'll just show a message
-        showNotification('چاککردنی ئاگادارکردنەوە لەم وەشانەدا پشتگیری ناکرێت', 'info');
+   // Edit notification
+function editNotification(notificationId) {
+    const notification = notifications.find(n => n.id === notificationId);
+    if (!notification) return;
+    
+    // For now, we'll just show a simple edit option - delete and recreate
+    // You can create a more sophisticated edit modal if needed
+    const newTitle = prompt('ناوی نوێی ئاگادارکردنەوە:', notification.title || '');
+    if (newTitle !== null) {
+        const newMessage = prompt('پەیامی نوێ:', notification.message || '');
+        if (newMessage !== null) {
+            notification.title = newTitle;
+            notification.message = newMessage;
+            notification.updatedAt = new Date().toISOString();
+            
+            saveNotificationToFirebase(notification);
+            loadNotifications();
+            showNotification('ئاگادارکردنەوە بەسەرکەوتووی نوێ کرایەوە', 'success');
+        }
     }
+}
 
     // Delete notification
-    async function deleteNotification(notificationId) {
-        if (!confirm('دڵنیایت لە سڕینەوەی ئەم ئاگادارکردنەوەیە؟')) {
-            return;
-        }
-        
-        const success = await deleteNotificationFromFirebase(notificationId);
-        
-        if (success) {
-            notifications = notifications.filter(n => n.id !== notificationId);
-            loadNotifications();
-            updateNotificationCount();
-            showNotification('ئاگادارکردنەوە بەسەرکەوتووی سڕدرایەوە', 'success');
-        } else {
-            showNotification('هەڵە لە سڕینەوەی ئاگادارکردنەوە', 'danger');
-        }
+async function deleteNotification(notificationId) {
+    if (!confirm('دڵنیایت لە سڕینەوەی ئەم ئاگادارکردنەوەیە؟')) {
+        return;
     }
+    
+    const notification = notifications.find(n => n.id === notificationId);
+    if (!notification) return;
+    
+    // Check if supervisor is trying to delete a non-pending notification
+    if (currentUser.role === 'supervisor' && notification.status !== 'pending') {
+        showNotification('تەنها ئاگادارکردنەوەی چاوەڕوانکراو دەتواندرێت سڕدرایەوە', 'danger');
+        return;
+    }
+    
+    const success = await deleteNotificationFromFirebase(notificationId);
+    
+    if (success) {
+        notifications = notifications.filter(n => n.id !== notificationId);
+        loadNotifications();
+        showNotification('ئاگادارکردنەوە بەسەرکەوتووی سڕدرایەوە', 'success');
+    } else {
+        showNotification('هەڵە لە سڕینەوەی ئاگادارکردنەوە', 'danger');
+    }
+}
 
     // Export to Excel
     function exportToExcel() {
@@ -6077,6 +6118,7 @@ function loadNotifications() {
 </script>
 </body>
 </html>
+
 
 
 
