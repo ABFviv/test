@@ -909,6 +909,19 @@
         .electrical-mechanical-totals {
             display: none;
         }
+        /* Add this new CSS for toggle button */
+.totals-hidden .bi-eye-slash {
+    display: inline-block;
+}
+.totals-hidden .bi-eye {
+    display: none;
+}
+.totals-visible .bi-eye {
+    display: inline-block;
+}
+.totals-visible .bi-eye-slash {
+    display: none;
+}
     </style>
 </head>
 <body>
@@ -1044,6 +1057,10 @@
                     <button class="btn btn-success ms-2 quick-record-only" id="quickRecordBtn" style="display: none;">
                         <i class="bi bi-plus-circle"></i> زیادکردنی تۆمار
                     </button>
+                     <!-- Add this toggle button -->
+        <button class="btn btn-outline-primary ms-2" id="toggleTotalsBtn">
+            <i class="bi bi-eye"></i> نیشاندانی کۆی گشتی
+        </button>
                 </div>
             </div>
         </div>
@@ -2566,16 +2583,16 @@ function applyTotalsDepartmentFilter() {
 
         // Show dashboard
         function showDashboard() {
-            document.getElementById('loginPage').style.display = 'none';
-            document.getElementById('dashboardPage').style.display = 'block';
-            document.getElementById('workRecordsPage').style.display = 'none';
-            document.getElementById('projectsPage').style.display = 'none';
-            document.getElementById('notificationsPage').style.display = 'none';
-            document.getElementById('dailyWorkTotalsSection').style.display = 'none';
-            document.getElementById('electricalMechanicalTotalsSection').style.display = 'none';
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('dashboardPage').style.display = 'block';
+    document.getElementById('workRecordsPage').style.display = 'none';
+    document.getElementById('projectsPage').style.display = 'none';
+    document.getElementById('notificationsPage').style.display = 'none';
+    document.getElementById('dailyWorkTotalsSection').style.display = 'none';
+    document.getElementById('electricalMechanicalTotalsSection').style.display = 'none';
             
             // Update user info
-            document.getElementById('userInfo').textContent = `لە ژوورەوەیت وەک: ${currentUser.username} (${currentUser.role})`;
+    document.getElementById('userInfo').textContent = `لە ژوورەوەیت وەک: ${currentUser.username} (${currentUser.role})`;
             
             // Show/hide admin-only elements
             const adminElements = document.querySelectorAll('.admin-only');
@@ -2624,9 +2641,11 @@ function applyTotalsDepartmentFilter() {
             
             // Update electrical/mechanical work totals
             updateElectricalMechanicalTotals();
+
+            setupTotalsToggle();
         }
 
-       // Show projects page
+      // Show projects page
 function showProjectsPage() {
     document.getElementById('loginPage').style.display = 'none';
     document.getElementById('dashboardPage').style.display = 'none';
@@ -2639,6 +2658,44 @@ function showProjectsPage() {
     document.getElementById('electricalMechanicalTotalsSection').style.display = 'none';
     
     loadProjects();
+}
+        // Toggle daily work totals visibility
+function setupTotalsToggle() {
+    const toggleBtn = document.getElementById('toggleTotalsBtn');
+    const dailyTotalsSection = document.getElementById('dailyWorkTotalsSection');
+    const electricalTotalsSection = document.getElementById('electricalMechanicalTotalsSection');
+    
+    let totalsVisible = false;
+    
+    toggleBtn.addEventListener('click', function() {
+        totalsVisible = !totalsVisible;
+        
+        if (totalsVisible) {
+            // Show totals sections
+            if (['crushing-prep', 'cutting-setting', 'unsetting'].includes(currentUser.department) || currentUser.role === 'admin') {
+                dailyTotalsSection.style.display = 'block';
+                updateDailyWorkTotals();
+            }
+            if (['electrical-ac', 'mechanical'].includes(currentUser.department) || currentUser.role === 'admin') {
+                electricalTotalsSection.style.display = 'block';
+                updateElectricalMechanicalTotals();
+            }
+            
+            // Update button text and icon
+            toggleBtn.innerHTML = '<i class="bi bi-eye-slash"></i> شاردنەوەی کۆی گشتی';
+            toggleBtn.classList.remove('btn-outline-primary');
+            toggleBtn.classList.add('btn-primary');
+        } else {
+            // Hide totals sections
+            dailyTotalsSection.style.display = 'none';
+            electricalTotalsSection.style.display = 'none';
+            
+            // Update button text and icon
+            toggleBtn.innerHTML = '<i class="bi bi-eye"></i> نیشاندانی کۆی گشتی';
+            toggleBtn.classList.remove('btn-primary');
+            toggleBtn.classList.add('btn-outline-primary');
+        }
+    });
 }
      // Show notifications page
 function showNotificationsPage() {
@@ -5900,5 +5957,6 @@ const selectedDepartments = Array.from(checkboxes).map(checkbox => checkbox.valu
 </script>
 </body>
 </html>
+
 
 
